@@ -3,376 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Coffee Desk</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<style>
-  :root{
-    --bg:#FFFFFF; --bg-subtle:#F6F7F9; --surface:#FFFFFF; --surface-2:#F0F1F4; --border:#E3E5EA;
-    --ink:#0D1015; --ink-soft:#4E5561; --ink-faint:#8991A0;
-    --accent:#95501F; --accent-strong:#743D17; --accent-ink:#FFFFFF; --accent-soft:#F1E2D3;
-    --green:#146B48; --green-soft:#DDF2E7;
-    --red:#AE3826; --red-soft:#F7DEDA;
-    --gold:#A97C0E;
-    --shadow: 0 1px 2px rgba(13,16,21,.04), 0 10px 26px rgba(13,16,21,.07);
-    --shadow-lift: 0 6px 14px rgba(13,16,21,.07), 0 18px 34px rgba(13,16,21,.12);
-    --radius: 14px;
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark){
-    :root:not([data-theme="light"]){
-      --bg:#0D1015; --bg-subtle:#12151B; --surface:#171B23; --surface-2:#1E232C; --border:#2B313C;
-      --ink:#EFF1F4; --ink-soft:#A7AEBB; --ink-faint:#6E7684;
-      --accent:#E0A167; --accent-strong:#EFB47E; --accent-ink:#1A1206; --accent-soft:#3A2A1B;
-      --green:#4FCB8F; --green-soft:#173629;
-      --red:#E2836E; --red-soft:#3A2320;
-      --gold:#E0B450;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
-      --shadow-lift: 0 8px 18px rgba(0,0,0,.35), 0 22px 44px rgba(0,0,0,.4);
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"]{
-    --bg:#0D1015; --bg-subtle:#12151B; --surface:#171B23; --surface-2:#1E232C; --border:#2B313C;
-    --ink:#EFF1F4; --ink-soft:#A7AEBB; --ink-faint:#6E7684;
-    --accent:#E0A167; --accent-strong:#EFB47E; --accent-ink:#1A1206; --accent-soft:#3A2A1B;
-    --green:#4FCB8F; --green-soft:#173629;
-    --red:#E2836E; --red-soft:#3A2320;
-    --gold:#E0B450;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 32px rgba(0,0,0,.35);
-    --shadow-lift: 0 8px 18px rgba(0,0,0,.35), 0 22px 44px rgba(0,0,0,.4);
-    color-scheme: dark;
-  }
-
-  *{box-sizing:border-box;}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:'IBM Plex Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-    font-size:15.5px; line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif; font-weight:600; margin:0; text-wrap:balance; letter-spacing:-0.01em;}
-  p{margin:0;}
-  a{color:var(--accent);}
-  .mono{font-family:'IBM Plex Mono',ui-monospace,Menlo,monospace;}
-  button{font-family:inherit;}
-  img{max-width:100%;}
-  [hidden]{display:none !important;}
-  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
-  @media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms !important; transition-duration:.01ms !important;} }
-
-  .wrap{max-width:1080px; margin:0 auto; padding-inline:24px;}
-  @media (max-width:640px){ .wrap{padding-inline:16px;} }
-  .band{background:var(--bg-subtle); border-top:1px solid var(--border); border-bottom:1px solid var(--border);}
-
-  /* ---------- Nav ---------- */
-  .nav{
-    position:sticky; top:env(safe-area-inset-top,0px); z-index:40;
-    background:color-mix(in srgb, var(--bg) 90%, transparent);
-    backdrop-filter:blur(10px); border-bottom:1px solid transparent;
-    transition:box-shadow .2s ease, border-color .2s ease, background .2s ease;
-  }
-  .nav.scrolled{ border-color:var(--border); box-shadow:0 8px 24px -18px rgba(13,16,21,.35); background:color-mix(in srgb, var(--bg) 97%, transparent); }
-  .nav-inner{max-width:1080px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:24px;}
-  @media (max-width:640px){ .nav-inner{padding:12px 16px; gap:12px;} }
-  .logo{display:flex; align-items:center; gap:9px; font-family:'Fraunces',serif; font-weight:600; font-size:19px; white-space:nowrap; cursor:pointer; border:none; background:none; color:var(--ink); padding:0;}
-  .logo-mark{width:30px; height:30px; border-radius:9px; background:var(--accent); color:var(--accent-ink); display:grid; place-items:center; font-size:15px; flex:none;}
-  .navtabs{display:flex; gap:2px; flex:1; overflow-x:auto; scrollbar-width:none;}
-  .navtabs::-webkit-scrollbar{display:none;}
-  .navtab{
-    border:none; background:none; color:var(--ink-soft); font-size:14px; font-weight:500;
-    padding:9px 13px; border-radius:99px; cursor:pointer; white-space:nowrap; transition:background .15s, color .15s;
-  }
-  .navtab:hover{background:var(--surface-2); color:var(--ink);}
-  .navtab.active{background:var(--accent-soft); color:var(--accent-strong);}
-  .navcta{margin-left:auto; flex:none;}
-  @media (max-width:680px){ .navcta{display:none;} }
-
-  /* ---------- Buttons ---------- */
-  .btn{
-    display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    border-radius:999px; border:1px solid transparent; padding:11px 20px; font-size:14.5px; font-weight:600;
-    cursor:pointer; transition:transform .1s, filter .15s, background .15s, box-shadow .15s; text-decoration:none;
-  }
-  .btn:active{transform:scale(.98);}
-  .btn-primary{background:var(--accent); color:var(--accent-ink); box-shadow:0 1px 2px rgba(13,16,21,.08);}
-  .btn-primary:hover{filter:brightness(1.08); box-shadow:0 4px 14px rgba(149,80,31,.28);}
-  .btn-ghost{background:transparent; color:var(--ink); border-color:var(--border);}
-  .btn-ghost:hover{background:var(--surface-2);}
-  .btn-outline{background:var(--surface); color:var(--accent-strong); border-color:var(--accent);}
-  .btn-outline:hover{background:var(--accent-soft);}
-  .btn-danger{background:transparent; color:var(--red); border-color:var(--red-soft);}
-  .btn-danger:hover{background:var(--red-soft);}
-  .btn-block{width:100%;}
-  .btn-sm{padding:7px 14px; font-size:13px;}
-  .btn:disabled{opacity:.5; cursor:not-allowed;}
-
-  /* ---------- Views / sections ---------- */
-  .view{padding-bottom:64px;}
-  section{padding-block:56px;}
-  .section-tight{padding-block:40px;}
-  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-strong); font-weight:600; margin-bottom:10px; display:block;}
-  .section-head{max-width:620px; margin-bottom:36px;}
-  .section-head h2{font-size:clamp(24px,3.2vw,32px);}
-  .section-head p{color:var(--ink-soft); margin-top:10px; font-size:16px;}
-
-  /* ---------- Hero ---------- */
-  .hero{padding-top:60px; padding-bottom:8px;}
-  .hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;}
-  @media (max-width:800px){ .hero-grid{grid-template-columns:1fr;} }
-  .hero h1{font-size:clamp(32px,5vw,50px); line-height:1.08;}
-  .hero .accent-word{color:var(--accent-strong);}
-  .hero-sub{margin-top:18px; font-size:17px; color:var(--ink-soft); max-width:46ch;}
-  .hero-actions{display:flex; gap:12px; margin-top:28px; flex-wrap:wrap;}
-  .hero-note{margin-top:16px; font-size:12.5px; color:var(--ink-faint);}
-
-  .hero-card{
-    background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:22px;
-    box-shadow:var(--shadow); position:relative;
-  }
-  .hero-card .banker-card{border:none; box-shadow:none; padding:0;}
-  .hero-card .banker-card:hover{transform:none; box-shadow:none;}
-  .hero-card-tag{
-    position:absolute; top:-12px; right:18px; background:var(--green); color:#fff; font-size:11.5px; font-weight:700;
-    padding:5px 11px; border-radius:99px; font-family:'IBM Plex Mono',monospace; letter-spacing:.03em;
-  }
-
-  /* ---------- Trust bar ---------- */
-  .trustbar{padding-block:30px 6px; text-align:center;}
-  .trust-label{font-size:11.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.09em; margin-bottom:18px; font-family:'IBM Plex Mono',monospace;}
-  .trust-logos{display:flex; justify-content:center; align-items:center; gap:38px; flex-wrap:wrap;}
-  .trust-logos span{font-family:'Fraunces',serif; font-weight:600; font-size:17px; color:var(--ink-faint); white-space:nowrap;}
-  @media (max-width:640px){ .trust-logos{gap:20px;} .trust-logos span{font-size:14px;} }
-
-  .stats-bar{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:16px; overflow:hidden;}
-  @media (max-width:640px){ .stats-bar{grid-template-columns:repeat(2,1fr);} }
-  .stat{background:var(--surface); padding:22px 16px; text-align:center;}
-  .stat b{display:block; font-family:'Fraunces',serif; font-size:26px; font-weight:600;}
-  .stat span{font-size:12.5px; color:var(--ink-soft); margin-top:4px; display:block;}
-
-  /* ---------- Steps ---------- */
-  .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-  @media (max-width:760px){ .steps{grid-template-columns:1fr;} }
-  .step{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:24px;}
-  .step-num{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--accent-strong); font-weight:600; margin-bottom:12px;}
-  .step h3{font-size:18px; margin-bottom:8px;}
-  .step p{color:var(--ink-soft); font-size:14.5px;}
-
-  /* ---------- Banker cards / grid ---------- */
-  .banker-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-  @media (max-width:900px){ .banker-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:640px){ .banker-grid{grid-template-columns:1fr;} }
-
-  .banker-card{
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px;
-    display:flex; flex-direction:column; gap:12px; box-shadow:var(--shadow); position:relative;
-    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
-  .banker-card:hover{transform:translateY(-3px); box-shadow:var(--shadow-lift); border-color:color-mix(in srgb, var(--accent) 30%, var(--border));}
-  .banker-top{display:flex; gap:12px; align-items:flex-start;}
-  .avatar{
-    width:52px; height:52px; border-radius:14px; flex:none; display:grid; place-items:center;
-    font-family:'Fraunces',serif; font-weight:600; font-size:18px; color:#fff;
-  }
-  .avatar-lg{width:76px; height:76px; border-radius:18px; font-size:26px;}
-  .banker-id{min-width:0;}
-  .banker-id .name{font-weight:600; font-size:15.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .banker-id .role{color:var(--ink-soft); font-size:13px; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .banker-id .loc{color:var(--ink-faint); font-size:12px; margin-top:2px;}
-  .new-badge{position:absolute; top:14px; right:14px; background:var(--green-soft); color:var(--green); font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:99px; font-family:'IBM Plex Mono',monospace;}
-  .ribbon-badge{position:absolute; top:14px; right:14px; background:var(--accent-soft); color:var(--accent-strong); font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:99px; font-family:'IBM Plex Mono',monospace;}
-  .verified-dot{display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:var(--green-soft); color:var(--green); font-size:9px; font-weight:700; vertical-align:middle; margin-left:1px; flex:none;}
-
-  .rating{display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink-soft);}
-  .stars{color:var(--gold); letter-spacing:1px; font-size:13px;}
-  .rating b{color:var(--ink); font-family:'IBM Plex Mono',monospace; font-weight:600;}
-
-  .tag-row{display:flex; flex-wrap:wrap; gap:6px;}
-  .tag{background:var(--surface-2); color:var(--ink-soft); font-size:11.5px; font-weight:500; padding:4px 9px; border-radius:99px; white-space:nowrap;}
-  .tag-accent{background:var(--accent-soft); color:var(--accent-strong);}
-
-  .banker-bottom{display:flex; align-items:center; justify-content:space-between; margin-top:auto; padding-top:8px; border-top:1px solid var(--border);}
-  .price{font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:15px;}
-  .price span{color:var(--ink-faint); font-weight:400; font-size:12px;}
-
-  .filter-bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px; align-items:center;}
-  .filter-bar input[type=search]{flex:1; min-width:180px;}
-  .input, select, textarea{
-    background:var(--surface); border:1px solid var(--border); color:var(--ink); border-radius:10px;
-    padding:10px 12px; font-size:14px; font-family:inherit; width:100%;
-  }
-  select{cursor:pointer;}
-  .filter-bar select{width:auto;}
-  .result-count{font-size:13px; color:var(--ink-faint); margin-bottom:16px;}
-
-  /* ---------- Testimonials ---------- */
-  .testimonials{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-  @media (max-width:800px){ .testimonials{grid-template-columns:1fr;} }
-  .testimonial{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:22px; display:flex; flex-direction:column; gap:14px;}
-  .testimonial q{font-size:15px; line-height:1.5;}
-  .testimonial cite{font-style:normal; font-size:12.5px; color:var(--ink-soft); font-weight:600;}
-
-  /* ---------- FAQ ---------- */
-  .faq{border-top:1px solid var(--border);}
-  .faq details{border-bottom:1px solid var(--border); padding-block:16px;}
-  .faq summary{cursor:pointer; font-weight:600; font-size:15px; list-style:none; display:flex; justify-content:space-between; gap:12px;}
-  .faq summary::-webkit-details-marker{display:none;}
-  .faq summary::after{content:'+'; color:var(--accent-strong); font-size:20px; font-weight:400; flex:none;}
-  .faq details[open] summary::after{content:'−';}
-  .faq p{color:var(--ink-soft); margin-top:12px; font-size:14.5px; max-width:70ch;}
-
-  /* ---------- Forms ---------- */
-  .card{background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:32px; box-shadow:var(--shadow);}
-  @media (max-width:640px){ .card{padding:20px;} }
-  .field{margin-bottom:18px;}
-  .field label{display:block; font-size:13px; font-weight:600; margin-bottom:6px;}
-  .field .hint{font-size:12px; color:var(--ink-faint); margin-top:5px;}
-  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
-  @media (max-width:560px){ .field-row{grid-template-columns:1fr;} }
-  .field-row-3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px;}
-  @media (max-width:640px){ .field-row-3{grid-template-columns:1fr;} }
-  .checkbox-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:8px;}
-  @media (max-width:560px){ .checkbox-grid{grid-template-columns:1fr;} }
-  .checkbox{display:flex; align-items:center; gap:9px; font-size:13.5px; background:var(--surface-2); padding:9px 11px; border-radius:9px; cursor:pointer;}
-  .checkbox input{accent-color:var(--accent);}
-  .consent-box{display:flex; gap:10px; align-items:flex-start; background:var(--accent-soft); border-radius:12px; padding:15px 16px; font-size:13px; color:var(--ink); line-height:1.55; cursor:pointer;}
-  .consent-box input{margin-top:2px; accent-color:var(--accent); flex:none;}
-  textarea{resize:vertical; min-height:96px; font-family:inherit;}
-  fieldset{border:none; padding:0; margin:0 0 22px 0;}
-  legend{font-size:13px; font-weight:600; margin-bottom:10px; padding:0;}
-  .two-col{display:grid; grid-template-columns:1fr 1.3fr; gap:40px; align-items:start;}
-  @media (max-width:860px){ .two-col{grid-template-columns:1fr;} }
-  .side-note{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); padding:22px;}
-  .side-note h4{font-size:15px; margin-bottom:10px; color:var(--ink);}
-  .side-note ul{margin:0; padding-left:18px; color:var(--ink-soft); font-size:13.5px; display:flex; flex-direction:column; gap:8px;}
-  .disclosure-note{font-size:12.5px; color:var(--ink-faint); background:var(--surface-2); border-radius:9px; padding:9px 12px; display:flex; gap:8px; align-items:flex-start;}
-
-  /* ---------- Empty / success states ---------- */
-  .empty-state{text-align:center; padding:64px 20px; border:1.5px dashed var(--border); border-radius:var(--radius);}
-  .empty-state .glyph{font-size:34px; margin-bottom:14px;}
-  .empty-state h3{font-size:18px; margin-bottom:8px;}
-  .empty-state p{color:var(--ink-soft); font-size:14px; margin-bottom:20px;}
-
-  .success-box{text-align:center; padding:40px 20px;}
-  .success-box .glyph{width:56px; height:56px; border-radius:50%; background:var(--green-soft); color:var(--green); display:grid; place-items:center; margin:0 auto 18px; font-size:26px;}
-  .success-box h3{font-size:21px; margin-bottom:8px;}
-  .success-box p{color:var(--ink-soft); font-size:14.5px; margin-bottom:24px;}
-
-  /* ---------- Bookings / dashboard ---------- */
-  .booking-list{display:flex; flex-direction:column; gap:12px;}
-  .booking-row{
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px;
-    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
-  }
-  .booking-info{flex:1; min-width:200px;}
-  .booking-info .who{font-weight:600; font-size:15px;}
-  .booking-info .meta{color:var(--ink-soft); font-size:13px; margin-top:3px;}
-  .badge{font-size:11px; font-weight:700; padding:4px 10px; border-radius:99px; font-family:'IBM Plex Mono',monospace; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap;}
-  .badge-confirmed{background:var(--green-soft); color:var(--green);}
-  .badge-cancelled{background:var(--red-soft); color:var(--red);}
-  .booking-actions{display:flex; gap:8px; flex:none;}
-
-  .dash-head{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:28px;}
-  .dash-select{max-width:320px;}
-  .dash-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:32px;}
-  @media (max-width:640px){ .dash-stats{grid-template-columns:1fr;} }
-  .dash-stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px;}
-  .dash-stat b{font-family:'IBM Plex Mono',monospace; font-size:22px; display:block;}
-  .dash-stat span{font-size:12.5px; color:var(--ink-soft);}
-
-  /* ---------- Modal ---------- */
-  .overlay{
-    position:fixed; inset:0; background:rgba(9,11,15,.6); z-index:100; display:flex; align-items:flex-end;
-    justify-content:center; padding:0;
-  }
-  @media (min-width:640px){ .overlay{align-items:center; padding:24px;} }
-  .modal{
-    background:var(--surface); width:100%; max-width:560px; max-height:92vh; overflow-y:auto;
-    border-radius:20px 20px 0 0; padding:28px; position:relative; box-shadow:var(--shadow-lift);
-  }
-  @media (min-width:640px){ .modal{border-radius:20px;} }
-  .modal-close{position:absolute; top:18px; right:18px; background:var(--surface-2); border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px; color:var(--ink-soft); display:grid; place-items:center;}
-  .modal-close:hover{background:var(--border);}
-  .modal h3{font-size:20px; margin-bottom:4px;}
-  .slot-list{display:flex; flex-direction:column; gap:8px; margin-top:16px;}
-  .slot-btn{
-    display:flex; justify-content:space-between; align-items:center; width:100%; text-align:left;
-    background:var(--surface-2); border:1px solid transparent; border-radius:10px; padding:12px 14px;
-    cursor:pointer; font-size:14px; color:var(--ink); transition:border-color .15s, background .15s;
-  }
-  .slot-btn:hover{border-color:var(--accent);}
-  .slot-btn .go{color:var(--accent-strong); font-size:13px; font-weight:600;}
-  .order-summary{background:var(--surface-2); border-radius:12px; padding:16px 18px; margin:18px 0; font-size:13.5px;}
-  .order-row{display:flex; justify-content:space-between; padding-block:5px;}
-  .order-row.total{border-top:1px solid var(--border); margin-top:6px; padding-top:10px; font-weight:600; font-size:15px;}
-  .fake-card{
-    background:var(--surface); border:1px dashed var(--border); border-radius:12px; padding:14px 16px;
-    display:flex; justify-content:space-between; align-items:center; font-family:'IBM Plex Mono',monospace; font-size:13.5px; margin-bottom:18px;
-  }
-  .fake-card span{color:var(--ink-faint); font-size:11px;}
-
-  /* ---------- Footer ---------- */
-  footer{background:var(--bg-subtle); border-top:1px solid var(--border); margin-top:40px;}
-  .footer-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1.3fr; gap:32px; padding-block:48px 28px;}
-  @media (max-width:760px){ .footer-grid{grid-template-columns:1fr 1fr;} }
-  @media (max-width:480px){ .footer-grid{grid-template-columns:1fr;} }
-  .footer-brand p{color:var(--ink-soft); font-size:13px; margin-top:10px; max-width:32ch;}
-  .footer-col h5{font-size:11.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--ink-faint); margin-bottom:12px; font-family:'IBM Plex Mono',monospace; font-weight:600;}
-  .footer-col a, .footer-col button{display:block; width:100%; font-size:13.5px; color:var(--ink-soft); text-decoration:none; margin-bottom:9px; cursor:pointer; background:none; border:none; padding:0; font-family:inherit; text-align:left;}
-  .footer-col a:hover, .footer-col button:hover{color:var(--accent-strong);}
-  .footer-col p{font-size:12.5px; color:var(--ink-faint); line-height:1.55;}
-  .footer-bottom{border-top:1px solid var(--border); padding-block:18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-size:12.5px; color:var(--ink-faint);}
-</style>
+<title>Cortado</title>
+<meta name="description" content="Cortado connects students with working and former bankers for paid one-on-one career conversations.">
+<link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- icon sprite (referenced via <use href="#i-…">) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-cap" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+    <symbol id="i-briefcase" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  </defs>
+</svg>
+
+<div class="demo-bar"><b>Prototype</b> Booking requests only — no real payments are processed.</div>
+
 <div class="nav" id="siteNav">
   <div class="nav-inner">
-    <button class="logo" onclick="showView('home')"><span class="logo-mark">☕</span>The Coffee Desk</button>
-    <div class="navtabs" id="navtabs">
-      <button class="navtab" data-view="home" onclick="showView('home')">Home</button>
-      <button class="navtab" data-view="marketplace" onclick="showView('marketplace')">Browse Bankers</button>
-      <button class="navtab" data-view="register" onclick="showView('register')">Become a Banker</button>
-      <button class="navtab" data-view="bookings" onclick="showView('bookings')">My Bookings</button>
-      <button class="navtab" data-view="dashboard" onclick="showView('dashboard')">Banker Dashboard</button>
-    </div>
-    <button class="btn btn-primary navcta" onclick="showView('marketplace')">Find a banker</button>
+    <button class="logo" data-action="logo" aria-label="Cortado home">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="6" fill="currentColor"/><path d="M18.6 9.4A6.5 6.5 0 1 0 18.6 18.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="logo-text">Cortado</span>
+    </button>
+    <div class="navtabs" id="navtabs"></div>
+    <div class="nav-right" id="navRight"></div>
   </div>
 </div>
 
-<!-- ============ HOME ============ -->
+<!-- ============ HOME (visitors) ============ -->
 <section class="view" data-view="home" id="view-home">
   <div class="wrap hero">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow">30 minutes · one banker · zero cold emails</span>
-        <h1>Get the industry insight your <span class="accent-word">LinkedIn messages</span> never answer.</h1>
-        <p class="hero-sub">The Coffee Desk connects students with working bankers for paid, one-on-one coffee chats — real talk about the job, the recruiting process, and how to break in, straight from people doing it right now.</p>
+        <span class="eyebrow">30 minutes. One banker. Zero cold emails.</span>
+        <h1>Get the industry insight your LinkedIn messages never answer.</h1>
+        <p class="hero-sub">Cortado connects students with working and former bankers for paid, one-on-one career conversations — about the job, the recruiting process and how to break in, straight from people who have done it.</p>
         <div class="hero-actions">
-          <button class="btn btn-primary" onclick="showView('marketplace')">Browse bankers →</button>
-          <button class="btn btn-ghost" onclick="showView('register')">I'm a banker, list me</button>
+          <button class="btn btn-primary" data-action="go" data-view="marketplace">Browse bankers</button>
+          <button class="btn btn-ghost" data-action="becomeBanker">Offer your experience</button>
         </div>
-        <p class="hero-note">No subscription. Pay per chat. Cancel anytime for a full refund.</p>
+        <p class="hero-note">No subscription. You pay per conversation.</p>
       </div>
       <div class="hero-card" id="heroCard"></div>
-    </div>
-  </div>
-
-  <div class="wrap trustbar">
-    <p class="trust-label">Bankers on The Coffee Desk currently work at</p>
-    <div class="trust-logos">
-      <span>Goldman Sachs</span><span>J.P. Morgan</span><span>BNP Paribas</span><span>Deutsche Bank</span><span>Blackstone</span><span>UBS</span>
-    </div>
-  </div>
-
-  <div class="band">
-    <div class="wrap section-tight">
-      <div class="stats-bar">
-        <div class="stat"><b class="mono">180+</b><span>Bankers listed</span></div>
-        <div class="stat"><b class="mono">45</b><span>Banks, 12 countries</span></div>
-        <div class="stat"><b class="mono">3,400+</b><span>Chats booked</span></div>
-        <div class="stat"><b class="mono">4.8★</b><span>Average rating</span></div>
-      </div>
     </div>
   </div>
 
@@ -382,31 +61,45 @@
       <h2>Three steps between you and a real answer</h2>
     </div>
     <div class="steps">
-      <div class="step"><div class="step-num">01</div><h3>Browse verified profiles</h3><p>Filter by bank, role, and expertise. Every profile lists real experience, a fixed price, and open time slots — no guessing what's appropriate to ask.</p></div>
-      <div class="step"><div class="step-num">02</div><h3>Book a slot that works</h3><p>Pick an open time, confirm the details, and pay securely. You get an instant confirmation with a video link or meeting spot.</p></div>
-      <div class="step"><div class="step-num">03</div><h3>Show up and ask anything</h3><p>30–45 minutes, one-on-one, no recruiter listening in. Ask the questions you'd never put in a first cold email.</p></div>
+      <div class="step"><div class="step-num">01</div><h3>Find the right person</h3><p>Filter by bank, role and expertise. Every profile shows employer, experience, a fixed price and open time slots — and whether the banker works there now or did before.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Request a time slot</h3><p>Pick an open slot and send your request with the questions you have. The banker confirms, so nothing is booked without their say-so.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Have the conversation</h3><p>30 to 60 minutes, one-on-one, no recruiter listening in. Ask what you would never put in a first cold email.</p></div>
     </div>
   </div>
 
-  <div class="band">
+  <div class="band" id="featuredSection" hidden>
     <div class="wrap section-tight">
       <div class="section-head">
-        <span class="eyebrow">Featured this week</span>
-        <h2>A few bankers currently taking bookings</h2>
+        <span class="eyebrow">Available now</span>
+        <h2>Bankers currently taking requests</h2>
       </div>
       <div class="banker-grid" id="featuredGrid"></div>
     </div>
   </div>
 
-  <div class="wrap section-tight">
-    <div class="section-head">
-      <span class="eyebrow">What students say</span>
-      <h2>Worth more than another unanswered email</h2>
-    </div>
-    <div class="testimonials">
-      <div class="testimonial"><q>I was terrified of cold-emailing bankers. Paying for 30 minutes of someone's undivided attention turned out to be worth more than five unanswered LinkedIn messages.</q><cite>Lena K. — MSc Finance, LSE</cite></div>
-      <div class="testimonial"><q>Booked a chat with a Blackstone VP two weeks before my private equity interview. Walked in knowing exactly what they'd ask.</q><cite>Diego R. — BSc Economics, Bocconi</cite></div>
-      <div class="testimonial"><q>My call with an analyst in Frankfurt demystified the entire recruiting timeline in Germany. Worth every euro.</q><cite>Franzi M. — BA Business Administration, Mannheim</cite></div>
+  <div class="wrap section">
+    <div class="split">
+      <div class="panel">
+        <h3>For students</h3>
+        <p>Get a trusted, first-hand answer instead of guessing what recruiting really looks like.</p>
+        <ul>
+          <li><svg class="ic"><use href="#i-check"/></svg>Verified profiles with employer, role and years of experience</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Fixed price and open slots visible before you request</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Current and former bankers clearly labelled</li>
+        </ul>
+        <button class="btn btn-primary" data-action="go" data-view="marketplace">Browse bankers</button>
+      </div>
+      <div class="panel">
+        <h3>For bankers</h3>
+        <p>Turn the coffee chats you already get asked for into scheduled, compensated time.</p>
+        <ul>
+          <li><svg class="ic"><use href="#i-check"/></svg>You set the price, session length and your own time slots</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>You keep 88% of every booking</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Your name stays private until you confirm a request</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Verified through your work email or, for former bankers, your LinkedIn profile</li>
+        </ul>
+        <button class="btn btn-outline" data-action="becomeBanker">Create a profile</button>
+      </div>
     </div>
   </div>
 
@@ -414,24 +107,32 @@
     <div class="wrap section-tight">
       <div class="section-head">
         <span class="eyebrow">Questions</span>
-        <h2>Before you book</h2>
+        <h2>Before you request</h2>
       </div>
       <div class="faq">
         <details open>
           <summary>Is this real mentoring or just a paid favor?</summary>
-          <p>It's compensated time — and that's the point. Bankers can be generous with their calendar without feeling exploited, and you skip the guessing game of "is this too much to ask for free?"</p>
+          <p>It is compensated time — and that is the point. Bankers can be generous with their calendar without feeling exploited, and you skip the guessing game of whether it is too much to ask for free.</p>
         </details>
         <details>
-          <summary>What if a banker cancels on me?</summary>
-          <p>You're refunded automatically and can rebook any other open slot, with priority access to the same banker's next available time.</p>
+          <summary>What if a banker cancels?</summary>
+          <p>Your slot is released and you can request another open slot with the same banker or someone else.</p>
         </details>
         <details>
           <summary>Do bankers need approval from their firm?</summary>
-          <p>Every banker confirms compliance with their employer's outside-activity policy before a profile goes live. Sessions are scoped to career and recruiting conversations only — never confidential deal, client, or trade information.</p>
+          <p>Every current banker confirms compliance with their employer's outside-activity policy before a profile goes live. Sessions are limited to career and recruiting conversations — never confidential deal, client or trade information.</p>
+        </details>
+        <details>
+          <summary>Why don't profiles show names?</summary>
+          <p>Banker profiles show role, employer, location and experience — what the person offers. A banker's name and contact details are shared only once they confirm your request. That protects bankers' privacy and keeps the focus on the experience you are booking. Bankers see the name of the student who requests a chat.</p>
+        </details>
+        <details>
+          <summary>What does "former" mean on a profile?</summary>
+          <p>Former bankers share first-hand experience from past roles, for example three years as an analyst in New York. They are labelled clearly, so you always know whether you are talking to someone who works there today.</p>
         </details>
         <details>
           <summary>Is this only for investment banking?</summary>
-          <p>The Coffee Desk started here because the information gap in banking recruiting is especially sharp, but the same model works for consulting, law, and tech — those are next.</p>
+          <p>Cortado starts with banking, where the information gap in recruiting is especially large. The same model applies to consulting, law and tech.</p>
         </details>
       </div>
     </div>
@@ -441,30 +142,40 @@
     <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
       <div>
         <h3 style="font-size:22px; margin-bottom:6px;">Ready to skip the cold email?</h3>
-        <p style="color:var(--ink-soft); font-size:14.5px;">Browse 6 bankers currently taking bookings, or list your own calendar in under two minutes.</p>
+        <p style="color:var(--ink-soft); font-size:14.5px;">Create your profile in a few minutes — as a student, as a banker, or both.</p>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn btn-primary" onclick="showView('marketplace')">Browse bankers</button>
-        <button class="btn btn-outline" onclick="showView('register')">Become a banker</button>
+        <button class="btn btn-primary" data-action="start">Get started</button>
+        <button class="btn btn-ghost" data-action="go" data-view="marketplace">Browse bankers</button>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ============ WELCOME / ONBOARDING ============ -->
+<section class="view" data-view="welcome" id="view-welcome" hidden>
+  <div class="wrap onb" id="onbBody"></div>
+</section>
+
 <!-- ============ MARKETPLACE ============ -->
 <section class="view" data-view="marketplace" id="view-marketplace" hidden>
-  <div class="wrap" style="padding-top:44px;">
+  <div class="wrap" style="padding-top:48px;">
     <div class="section-head">
-      <span class="eyebrow">Browse Bankers</span>
-      <h2>Find someone who's done exactly what you want to do</h2>
+      <span class="eyebrow">Browse bankers</span>
+      <h2>Find someone who has done what you want to do</h2>
     </div>
     <div class="filter-bar">
-      <input type="search" class="input" id="searchInput" placeholder="Search by name, bank, or city…" oninput="renderMarketplace()">
-      <select id="filterTag" onchange="renderMarketplace()">
+      <input type="search" class="input" id="searchInput" placeholder="Search by name, bank or city">
+      <select id="filterTag" aria-label="Expertise">
         <option value="">All expertise</option>
       </select>
-      <select id="filterSort" onchange="renderMarketplace()">
-        <option value="rating">Sort: Top rated</option>
+      <select id="filterType" aria-label="Experience type">
+        <option value="">Current &amp; former</option>
+        <option value="current">Current bankers</option>
+        <option value="former">Former / experienced</option>
+      </select>
+      <select id="filterSort" aria-label="Sort">
+        <option value="rating">Sort: Best match</option>
         <option value="price-asc">Sort: Price (low to high)</option>
         <option value="price-desc">Sort: Price (high to low)</option>
         <option value="new">Sort: Newest</option>
@@ -475,131 +186,24 @@
   </div>
 </section>
 
-<!-- ============ REGISTER (Become a Banker) ============ -->
-<section class="view" data-view="register" id="view-register" hidden>
-  <div class="wrap" style="padding-top:44px;">
-    <div class="section-head">
-      <span class="eyebrow">Become a Banker</span>
-      <h2>Get paid for the coffee chats you're already having</h2>
-      <p>Set your own price and availability. Keep 88% of every booking. Meet ambitious students before your competitors do.</p>
-    </div>
-
-    <div id="registerFormWrap">
-      <div class="two-col">
-        <div class="side-note">
-          <h4>Why bankers list here</h4>
-          <ul>
-            <li>You set the price, duration, and exact time slots — nothing is booked without your say-so.</li>
-            <li>88% of every payment goes to you; the platform fee covers scheduling, payments, and support.</li>
-            <li>You confirm compliance with your firm's outside-activity policy before your profile goes live.</li>
-            <li>Full control: pause your profile or remove a slot at any time.</li>
-            <li>Most profiles get their first booking within a week of going live.</li>
-          </ul>
-        </div>
-
-        <form class="card" id="registerForm" onsubmit="handleRegisterSubmit(event)">
-          <div class="field-row">
-            <div class="field"><label for="regName">Full name</label><input class="input" id="regName" required placeholder="e.g. Aisha Bello"></div>
-            <div class="field"><label for="regEmployer">Current employer</label><input class="input" id="regEmployer" required placeholder="e.g. Goldman Sachs"></div>
-          </div>
-          <div class="field-row">
-            <div class="field"><label for="regRole">Role / title</label><input class="input" id="regRole" required placeholder="e.g. Vice President, M&amp;A"></div>
-            <div class="field"><label for="regLocation">Location</label><input class="input" id="regLocation" required placeholder="e.g. London, UK"></div>
-          </div>
-          <div class="field-row-3">
-            <div class="field"><label for="regYears">Years of experience</label><input class="input" type="number" min="0" max="50" id="regYears" required placeholder="5"></div>
-            <div class="field"><label for="regDuration">Session length</label>
-              <select id="regDuration">
-                <option value="30">30 minutes</option>
-                <option value="45">45 minutes</option>
-                <option value="60">60 minutes</option>
-              </select>
-            </div>
-            <div class="field"><label for="regPrice">Price per session</label>
-              <div style="display:flex; gap:6px;">
-                <select id="regCurrency" style="width:84px; flex:none;">
-                  <option value="USD">$</option>
-                  <option value="EUR">€</option>
-                  <option value="GBP">£</option>
-                  <option value="CHF">CHF</option>
-                </select>
-                <input class="input" type="number" min="5" max="500" id="regPrice" required placeholder="60">
-              </div>
-            </div>
-          </div>
-
-          <fieldset>
-            <legend>Areas of expertise (pick a few)</legend>
-            <div class="checkbox-grid" id="tagCheckboxes"></div>
-          </fieldset>
-
-          <div class="field">
-            <label for="regLanguages">Languages spoken</label>
-            <input class="input" id="regLanguages" required placeholder="e.g. English, French">
-          </div>
-
-          <div class="field">
-            <label for="regBio">Short bio</label>
-            <textarea id="regBio" required maxlength="320" placeholder="How you broke in, what you can help with, and who should book you."></textarea>
-            <p class="hint">Shown on your public profile. Max 320 characters.</p>
-          </div>
-
-          <div class="field">
-            <label for="regLinkedin">LinkedIn URL (optional)</label>
-            <input class="input" id="regLinkedin" placeholder="linkedin.com/in/…">
-          </div>
-
-          <fieldset>
-            <legend>Open time slots (add 1–3)</legend>
-            <div class="field-row">
-              <input class="input" id="regSlot1" placeholder="e.g. Tue, Sep 22 · 9:00 AM">
-              <input class="input" id="regSlot2" placeholder="e.g. Thu, Sep 24 · 5:30 PM">
-            </div>
-            <div class="field" style="margin-top:14px;">
-              <input class="input" id="regSlot3" placeholder="e.g. Tue, Sep 29 · 12:00 PM (optional)">
-            </div>
-          </fieldset>
-
-          <div class="field">
-            <label class="consent-box">
-              <input type="checkbox" id="regCompliance" required>
-              <span>I confirm this profile complies with my employer's outside-activity / compliance policy, and that I will not share confidential, non-public, or client-specific information during sessions.</span>
-            </label>
-          </div>
-
-          <button class="btn btn-primary btn-block" type="submit">Create my profile</button>
-        </form>
-      </div>
-    </div>
-
-    <div id="registerSuccess" hidden></div>
-  </div>
-</section>
-
-<!-- ============ MY BOOKINGS ============ -->
+<!-- ============ MY BOOKINGS (student) ============ -->
 <section class="view" data-view="bookings" id="view-bookings" hidden>
-  <div class="wrap" style="padding-top:44px; max-width:760px;">
+  <div class="wrap" style="padding-top:48px; max-width:760px;">
     <div class="section-head">
-      <span class="eyebrow">My Bookings</span>
-      <h2>Your upcoming coffee chats</h2>
-      <p>Bookings made on this device are stored locally in your browser for this demo — no account required.</p>
+      <span class="eyebrow">My bookings</span>
+      <h2>Your conversation requests</h2>
+      <p>Requests are confirmed by the banker. Names and contact details appear here once a request is confirmed.</p>
     </div>
     <div id="bookingsList"></div>
   </div>
 </section>
 
-<!-- ============ BANKER DASHBOARD ============ -->
+<!-- ============ DASHBOARD (banker) ============ -->
 <section class="view" data-view="dashboard" id="view-dashboard" hidden>
-  <div class="wrap" style="padding-top:44px;">
+  <div class="wrap" style="padding-top:48px;">
     <div class="section-head">
-      <span class="eyebrow">Banker Dashboard</span>
+      <span class="eyebrow">Banker dashboard</span>
       <h2>Manage your profile and requests</h2>
-      <p>No login in this demo — pick a profile below to view its dashboard (yours or a seeded example).</p>
-    </div>
-    <div class="dash-head">
-      <div class="dash-select" style="flex:1;">
-        <select id="dashBankerSelect" class="input" onchange="renderDashboard()"></select>
-      </div>
     </div>
     <div id="dashboardBody"></div>
   </div>
@@ -608,581 +212,47 @@
 <footer>
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <div class="logo" style="cursor:default;"><span class="logo-mark">☕</span>The Coffee Desk</div>
-      <p>A marketplace for paid, one-on-one coffee chats between students and working bankers.</p>
+      <div class="logo" style="cursor:default;">
+        <svg viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="6" fill="currentColor"/><path d="M18.6 9.4A6.5 6.5 0 1 0 18.6 18.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+        <span>Cortado</span>
+      </div>
+      <p>Paid, one-on-one career conversations between students and bankers.</p>
     </div>
     <div class="footer-col">
-      <h5>For Students</h5>
-      <button onclick="showView('marketplace')">Browse bankers</button>
-      <button onclick="showView('bookings')">My bookings</button>
+      <h5>For students</h5>
+      <button data-action="go" data-view="marketplace">Browse bankers</button>
+      <button data-action="go" data-view="bookings">My bookings</button>
     </div>
     <div class="footer-col">
-      <h5>For Bankers</h5>
-      <button onclick="showView('register')">Create a profile</button>
-      <button onclick="showView('dashboard')">Banker dashboard</button>
+      <h5>For bankers</h5>
+      <button data-action="becomeBanker">Create a profile</button>
+      <button data-action="go" data-view="dashboard">Dashboard</button>
     </div>
     <div class="footer-col">
       <h5>Trust &amp; compliance</h5>
-      <p>Every banker confirms their firm's outside-activity policy before listing. Sessions are career conversations only — never confidential deal or client information.</p>
+      <p>Current bankers confirm their firm's outside-activity policy before listing. Conversations cover careers and recruiting only — never confidential deal or client information.</p>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>☕ The Coffee Desk — a demo prototype. No real payments are processed.</span>
-    <span>Built for students who'd rather ask than guess.</span>
+    <span>Cortado — prototype. No real payments are processed.</span>
   </div>
 </footer>
 
 <!-- ============ MODAL ============ -->
-<div class="overlay" id="overlay" hidden onclick="if(event.target===this) closeModal()">
+<div class="overlay" id="overlay" hidden>
   <div class="modal" id="modalBox">
-    <button class="modal-close" onclick="closeModal()">✕</button>
+    <button class="modal-close" data-action="closeModal" aria-label="Close">&times;</button>
     <div id="modalBody"></div>
   </div>
 </div>
 
-<script>
-(function(){
-  "use strict";
-
-  var TAGS = ["M&A","ECM","DCM","Leveraged Finance","Private Equity","Sales & Trading","Corporate Banking","Restructuring","Venture Capital","Recruiting / Breaking In","MBA Admissions","CV / Resume Review"];
-  var CURRENCY_SYMBOL = { USD:"$", EUR:"€", GBP:"£", CHF:"CHF " };
-  var AVATAR_COLORS = ["#95501F","#2F5D62","#4A5FA5","#6B4E9E","#3D7A5C","#8C4A4A"];
-  var KEY_BANKERS = "coffeedesk_bankers_v1";
-  var KEY_BOOKINGS = "coffeedesk_bookings_v1";
-
-  var State = { bankers: [], bookings: [], modalStep:null, modalBanker:null, modalSlot:null };
-
-  function uid(prefix){ return prefix + "_" + Math.random().toString(36).slice(2,9); }
-
-  function escapeHtml(str){
-    return String(str==null?"":str).replace(/[&<>"']/g, function(c){
-      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
-    });
-  }
-
-  function initials(name){
-    var parts = String(name).trim().split(/\s+/);
-    var a = parts[0] ? parts[0][0] : "";
-    var b = parts.length>1 ? parts[parts.length-1][0] : "";
-    return (a+b).toUpperCase();
-  }
-
-  function avatarColor(name){
-    var sum = 0;
-    for (var i=0;i<name.length;i++) sum += name.charCodeAt(i);
-    return AVATAR_COLORS[sum % AVATAR_COLORS.length];
-  }
-
-  function fmtPrice(b){
-    var sym = CURRENCY_SYMBOL[b.currency] || "";
-    return sym + b.price;
-  }
-
-  function verifiedBadge(){
-    return '<span class="verified-dot" title="Employer verified for this demo">✓</span>';
-  }
-
-  /* ---------------- seed data ---------------- */
-  function seedBankers(){
-    return [
-      {
-        id:"seed_1", name:"Aisha Bello", employer:"Goldman Sachs", role:"Vice President, M&A",
-        location:"London, UK", years:7, currency:"GBP", price:65, duration:30,
-        tags:["M&A","Recruiting / Breaking In","CV / Resume Review"],
-        languages:["English","Yoruba"],
-        bio:"I made the jump from a non-target university into GS M&A after three rounds of rejections. Happy to talk through networking strategy, technical prep, and what the job is actually like.",
-        linkedin:"linkedin.com/in/aisha-bello", rating:4.9, chats:38, response:"within 4 hours",
-        slots:[ mkSlot("Tue, Sep 22 · 9:00 AM"), mkSlot("Thu, Sep 24 · 5:30 PM"), mkSlot("Tue, Sep 29 · 12:00 PM") ],
-        createdAt: 0
-      },
-      {
-        id:"seed_2", name:"Marcus Chen", employer:"J.P. Morgan", role:"Associate, Leveraged Finance",
-        location:"New York, USA", years:4, currency:"USD", price:75, duration:30,
-        tags:["Leveraged Finance","MBA Admissions","Recruiting / Breaking In"],
-        languages:["English","Mandarin"],
-        bio:"Went through full-time MBA recruiting into JPM after two years in corporate banking. Can walk you through LBO modeling basics and what associates actually do day-to-day.",
-        linkedin:"linkedin.com/in/marcus-chen-lf", rating:4.8, chats:52, response:"within a day",
-        slots:[ mkSlot("Wed, Sep 23 · 8:00 AM"), mkSlot("Fri, Sep 25 · 4:00 PM"), mkSlot("Mon, Sep 28 · 7:30 AM") ],
-        createdAt: 0
-      },
-      {
-        id:"seed_3", name:"Sophie Laurent", employer:"BNP Paribas", role:"Director, Equity Capital Markets",
-        location:"Paris, France", years:10, currency:"EUR", price:90, duration:45,
-        tags:["ECM","MBA Admissions","Recruiting / Breaking In"],
-        languages:["French","English","Spanish"],
-        bio:"I switched from consulting into ECM at 28 and now lead European IPO execution. I love mentoring students who think it's 'too late' to break in — it usually isn't.",
-        linkedin:"linkedin.com/in/sophie-laurent-ecm", rating:5.0, chats:61, response:"within 2 hours",
-        slots:[ mkSlot("Tue, Sep 22 · 6:00 PM"), mkSlot("Thu, Sep 24 · 12:30 PM") ],
-        createdAt: 0
-      },
-      {
-        id:"seed_4", name:"Tom Richter", employer:"Deutsche Bank", role:"Analyst, Investment Banking",
-        location:"Frankfurt, Germany", years:2, currency:"EUR", price:40, duration:30,
-        tags:["CV / Resume Review","Recruiting / Breaking In","Corporate Banking"],
-        languages:["German","English"],
-        bio:"One year out of my Bachelor's and still remember exactly what the application process felt like. Great if you want honest, unfiltered answers about the analyst grind in Frankfurt.",
-        linkedin:"linkedin.com/in/tom-richter-ib", rating:4.7, chats:19, response:"within 6 hours",
-        slots:[ mkSlot("Mon, Sep 21 · 5:00 PM"), mkSlot("Wed, Sep 23 · 6:00 PM"), mkSlot("Fri, Sep 25 · 3:00 PM") ],
-        createdAt: 0
-      },
-      {
-        id:"seed_5", name:"Priya Nair", employer:"Blackstone", role:"Vice President, Private Equity",
-        location:"London, UK", years:8, currency:"GBP", price:110, duration:30,
-        tags:["Private Equity","Recruiting / Breaking In","MBA Admissions"],
-        languages:["English","Hindi"],
-        bio:"Moved from IB to PE after two years and now sit on deal teams doing buyouts across Europe. Happy to demystify the on-cycle / off-cycle recruiting madness.",
-        linkedin:"linkedin.com/in/priya-nair-pe", rating:4.9, chats:44, response:"within a day",
-        slots:[ mkSlot("Thu, Sep 24 · 8:00 AM"), mkSlot("Mon, Sep 28 · 6:00 PM") ],
-        createdAt: 0
-      },
-      {
-        id:"seed_6", name:"Jonas Weber", employer:"UBS", role:"Associate, Sales & Trading",
-        location:"Zurich, Switzerland", years:3, currency:"CHF", price:60, duration:30,
-        tags:["Sales & Trading","Recruiting / Breaking In"],
-        languages:["German","English","French"],
-        bio:"Trading floor life is nothing like the movies — mostly spreadsheets, risk limits, and early mornings. Ask me anything about desk rotations and the S&T interview process.",
-        linkedin:"linkedin.com/in/jonas-weber-st", rating:4.6, chats:27, response:"within a day",
-        slots:[ mkSlot("Tue, Sep 22 · 7:30 AM"), mkSlot("Thu, Sep 24 · 4:30 PM"), mkSlot("Fri, Sep 25 · 8:00 AM") ],
-        createdAt: 0
-      }
-    ];
-  }
-
-  function mkSlot(label){ return { id: uid("slot"), label: label, taken:false }; }
-
-  /* ---------------- persistence ---------------- */
-  function loadState(){
-    var loadedBankers = null, loadedBookings = null;
-    try { loadedBankers = JSON.parse(localStorage.getItem(KEY_BANKERS)); } catch(e){}
-    try { loadedBookings = JSON.parse(localStorage.getItem(KEY_BOOKINGS)); } catch(e){}
-    State.bankers = (Array.isArray(loadedBankers) && loadedBankers.length) ? loadedBankers : seedBankers();
-    State.bookings = Array.isArray(loadedBookings) ? loadedBookings : [];
-    persistBankers();
-  }
-  function persistBankers(){ try{ localStorage.setItem(KEY_BANKERS, JSON.stringify(State.bankers)); }catch(e){} }
-  function persistBookings(){ try{ localStorage.setItem(KEY_BOOKINGS, JSON.stringify(State.bookings)); }catch(e){} }
-
-  /* ---------------- rendering helpers ---------------- */
-  function starString(rating){
-    var full = Math.round(rating);
-    var s = "";
-    for (var i=0;i<5;i++) s += i<full ? "★" : "☆";
-    return s;
-  }
-
-  function renderAvatar(b, size){
-    var cls = size==="lg" ? "avatar avatar-lg" : "avatar";
-    return '<div class="'+cls+'" style="background:'+avatarColor(b.name)+'">'+escapeHtml(initials(b.name))+'</div>';
-  }
-
-  function bankerCard(b, opts){
-    opts = opts || {};
-    var openSlots = b.slots.filter(function(s){ return !s.taken; }).length;
-    var badge = opts.ribbon ? '<span class="ribbon-badge">★ '+escapeHtml(opts.ribbon)+'</span>'
-              : (opts.isNew ? '<span class="new-badge">NEW</span>' : '');
-    return (
-      '<div class="banker-card">'
-      + badge
-      + '<div class="banker-top">'
-        + renderAvatar(b)
-        + '<div class="banker-id">'
-          + '<div class="name">'+escapeHtml(b.name)+'</div>'
-          + '<div class="role">'+escapeHtml(b.role)+' · '+escapeHtml(b.employer)+' '+verifiedBadge()+'</div>'
-          + '<div class="loc">'+escapeHtml(b.location)+'</div>'
-        + '</div>'
-      + '</div>'
-      + '<div class="rating"><span class="stars">'+starString(b.rating)+'</span><b class="mono">'+b.rating.toFixed(1)+'</b><span>('+b.chats+' chats)</span></div>'
-      + '<div class="tag-row">'+ b.tags.slice(0,2).map(function(t){ return '<span class="tag tag-accent">'+escapeHtml(t)+'</span>'; }).join('') +'</div>'
-      + '<div class="banker-bottom">'
-        + '<div class="price">'+fmtPrice(b)+' <span>/ '+b.duration+' min</span></div>'
-        + '<button class="btn btn-outline btn-sm" onclick="openProfile(\''+b.id+'\')" '+(openSlots===0?'disabled':'')+'>'+(openSlots===0?'Fully booked':'View profile')+'</button>'
-      + '</div>'
-    + '</div>'
-    );
-  }
-
-  function populateTagFilter(){
-    var sel = document.getElementById("filterTag");
-    TAGS.forEach(function(t){
-      var o = document.createElement("option");
-      o.value = t; o.textContent = t;
-      sel.appendChild(o);
-    });
-  }
-
-  function populateTagCheckboxes(){
-    var wrap = document.getElementById("tagCheckboxes");
-    wrap.innerHTML = TAGS.map(function(t,i){
-      return '<label class="checkbox"><input type="checkbox" name="regTag" value="'+escapeHtml(t)+'">'+escapeHtml(t)+'</label>';
-    }).join('');
-  }
-
-  function renderHero(){
-    var b = State.bankers[0];
-    document.getElementById("heroCard").innerHTML = '<span class="hero-card-tag">2 slots open</span>' + bankerCard(b);
-  }
-
-  function renderFeatured(){
-    var top = State.bankers.slice().sort(function(a,b){ return b.rating - a.rating; }).slice(0,3);
-    document.getElementById("featuredGrid").innerHTML = top.map(function(b,i){ return bankerCard(b, { ribbon: i===0 ? "Top Rated" : null }); }).join('');
-  }
-
-  function renderMarketplace(){
-    var q = (document.getElementById("searchInput").value || "").toLowerCase();
-    var tag = document.getElementById("filterTag").value;
-    var sort = document.getElementById("filterSort").value;
-
-    var list = State.bankers.filter(function(b){
-      var hay = (b.name+" "+b.employer+" "+b.location+" "+b.role).toLowerCase();
-      var matchesQ = !q || hay.indexOf(q) !== -1;
-      var matchesTag = !tag || b.tags.indexOf(tag) !== -1;
-      return matchesQ && matchesTag;
-    });
-
-    list.sort(function(a,b){
-      if (sort==="price-asc") return a.price - b.price;
-      if (sort==="price-desc") return b.price - a.price;
-      if (sort==="new") return b.createdAt - a.createdAt;
-      return b.rating - a.rating;
-    });
-
-    document.getElementById("resultCount").textContent = list.length + (list.length===1 ? " banker" : " bankers") + " found";
-    document.getElementById("marketplaceGrid").innerHTML = list.length
-      ? list.map(function(b){ return bankerCard(b, { isNew: b.createdAt > 0 }); }).join('')
-      : '<div class="empty-state" style="grid-column:1/-1;"><div class="glyph">🔍</div><h3>No bankers match those filters</h3><p>Try clearing the search or expertise filter.</p></div>';
-  }
-
-  /* ---------------- profile + booking modal ---------------- */
-  window.openProfile = function(bankerId){
-    var b = State.bankers.find(function(x){ return x.id===bankerId; });
-    if (!b) return;
-    State.modalBanker = b;
-    State.modalStep = "profile";
-    State.modalSlot = null;
-    renderModal();
-    openOverlay();
-  };
-
-  function renderModal(){
-    var b = State.modalBanker;
-    var body = document.getElementById("modalBody");
-    if (!b){ body.innerHTML = ""; return; }
-
-    if (State.modalStep === "profile"){
-      var openSlots = b.slots.filter(function(s){ return !s.taken; });
-      body.innerHTML =
-        '<div style="display:flex; gap:14px; align-items:flex-start; margin-bottom:6px;">'
-          + renderAvatar(b,"lg")
-          + '<div>'
-            + '<h3>'+escapeHtml(b.name)+'</h3>'
-            + '<p style="color:var(--ink-soft); font-size:14px; margin-top:2px;">'+escapeHtml(b.role)+' · '+escapeHtml(b.employer)+' '+verifiedBadge()+'</p>'
-            + '<p style="color:var(--ink-faint); font-size:12.5px; margin-top:2px;">'+escapeHtml(b.location)+' · '+b.years+' yrs experience</p>'
-          + '</div>'
-        + '</div>'
-        + '<div class="rating" style="margin:14px 0;"><span class="stars">'+starString(b.rating)+'</span><b class="mono">'+b.rating.toFixed(1)+'</b><span>('+b.chats+' chats · replies '+escapeHtml(b.response)+')</span></div>'
-        + '<p style="font-size:14.5px; color:var(--ink); margin-bottom:14px;">'+escapeHtml(b.bio)+'</p>'
-        + '<div class="tag-row" style="margin-bottom:14px;">'+ b.tags.map(function(t){ return '<span class="tag tag-accent">'+escapeHtml(t)+'</span>'; }).join('') +'</div>'
-        + '<p style="font-size:13px; color:var(--ink-soft); margin-bottom:14px;"><strong>Speaks:</strong> '+escapeHtml(b.languages.join(", "))+(b.linkedin ? '  ·  <a href="#" onclick="return false;" style="color:var(--accent-strong);">'+escapeHtml(b.linkedin)+'</a>' : '')+'</p>'
-        + '<p class="disclosure-note">💬 Career &amp; recruiting conversations only — no confidential deal, client, or trade information is shared.</p>'
-        + '<div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:16px; margin-top:14px;">'
-          + '<span style="font-weight:600;">Open time slots</span><span class="price">'+fmtPrice(b)+' <span>/ '+b.duration+' min</span></span>'
-        + '</div>'
-        + '<div class="slot-list">'
-          + (openSlots.length ? openSlots.map(function(s){
-              return '<button type="button" class="slot-btn" onclick="pickSlot(\''+s.id+'\')"><span>'+escapeHtml(s.label)+'</span><span class="go">Book this slot →</span></button>';
-            }).join('') : '<p style="color:var(--ink-faint); font-size:13.5px;">No open slots right now — check back soon.</p>')
-        + '</div>';
-      return;
-    }
-
-    if (State.modalStep === "details"){
-      var slot = b.slots.find(function(s){ return s.id===State.modalSlot; });
-      body.innerHTML =
-        '<h3>Your details</h3>'
-        + '<p style="color:var(--ink-soft); font-size:13.5px; margin-bottom:18px;">Booking <strong>'+escapeHtml(b.name)+'</strong> · '+escapeHtml(slot.label)+'</p>'
-        + '<form id="detailsForm" onsubmit="handleDetailsSubmit(event)">'
-          + '<div class="field"><label for="bkName">Full name</label><input class="input" id="bkName" required placeholder="Your name"></div>'
-          + '<div class="field"><label for="bkEmail">Email</label><input class="input" type="email" id="bkEmail" required placeholder="you@university.edu"></div>'
-          + '<div class="field"><label for="bkUni">University</label><input class="input" id="bkUni" required placeholder="e.g. LSE, Bocconi, Mannheim"></div>'
-          + '<div class="field"><label for="bkMsg">What do you want to ask about? (optional)</label><textarea id="bkMsg" placeholder="e.g. How to prepare for superday interviews"></textarea></div>'
-          + '<button class="btn btn-primary btn-block" type="submit">Continue to payment</button>'
-        + '</form>';
-      return;
-    }
-
-    if (State.modalStep === "payment"){
-      var slot2 = b.slots.find(function(s){ return s.id===State.modalSlot; });
-      var d = State.modalDetails;
-      body.innerHTML =
-        '<h3>Review &amp; pay</h3>'
-        + '<div class="order-summary">'
-          + '<div class="order-row"><span>Banker</span><span>'+escapeHtml(b.name)+'</span></div>'
-          + '<div class="order-row"><span>Time</span><span>'+escapeHtml(slot2.label)+'</span></div>'
-          + '<div class="order-row"><span>Duration</span><span>'+b.duration+' minutes</span></div>'
-          + '<div class="order-row"><span>Attendee</span><span>'+escapeHtml(d.name)+'</span></div>'
-          + '<div class="order-row total"><span>Total</span><span>'+fmtPrice(b)+'</span></div>'
-        + '</div>'
-        + '<div class="fake-card"><span>💳 •••• •••• •••• 4242</span><span>DEMO CARD — NOT CHARGED</span></div>'
-        + '<button class="btn btn-primary btn-block" onclick="confirmBooking()">Confirm &amp; pay '+fmtPrice(b)+'</button>'
-        + '<button class="btn btn-ghost btn-block" style="margin-top:8px;" onclick="State.modalStep=\'details\'; renderModal();">← Back</button>';
-      return;
-    }
-
-    if (State.modalStep === "success"){
-      body.innerHTML =
-        '<div class="success-box">'
-          + '<div class="glyph">✓</div>'
-          + '<h3>You\'re booked</h3>'
-          + '<p>A confirmation was "sent" to your email for this demo. Find it anytime under My Bookings.</p>'
-          + '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">'
-            + '<button class="btn btn-primary" onclick="closeModal(); showView(\'bookings\');">View my bookings</button>'
-            + '<button class="btn btn-ghost" onclick="closeModal();">Close</button>'
-          + '</div>'
-        + '</div>';
-      return;
-    }
-  }
-
-  window.pickSlot = function(slotId){
-    State.modalSlot = slotId;
-    State.modalStep = "details";
-    renderModal();
-  };
-
-  window.handleDetailsSubmit = function(ev){
-    ev.preventDefault();
-    State.modalDetails = {
-      name: document.getElementById("bkName").value.trim(),
-      email: document.getElementById("bkEmail").value.trim(),
-      uni: document.getElementById("bkUni").value.trim(),
-      msg: document.getElementById("bkMsg").value.trim()
-    };
-    State.modalStep = "payment";
-    renderModal();
-  };
-
-  window.confirmBooking = function(){
-    var b = State.modalBanker;
-    var slot = b.slots.find(function(s){ return s.id===State.modalSlot; });
-    if (!slot) return;
-    slot.taken = true;
-    var d = State.modalDetails;
-    State.bookings.unshift({
-      id: uid("bk"),
-      bankerId: b.id,
-      bankerName: b.name,
-      bankerEmployer: b.employer,
-      slotLabel: slot.label,
-      studentName: d.name,
-      studentEmail: d.email,
-      university: d.uni,
-      message: d.msg,
-      price: b.price,
-      currency: b.currency,
-      duration: b.duration,
-      status: "confirmed",
-      createdAt: Date.now()
-    });
-    persistBankers();
-    persistBookings();
-    State.modalStep = "success";
-    renderModal();
-    renderMarketplace();
-    renderFeatured();
-  };
-
-  function openOverlay(){
-    document.getElementById("overlay").hidden = false;
-    document.body.style.overflow = "hidden";
-  }
-  window.closeModal = function(){
-    document.getElementById("overlay").hidden = true;
-    document.body.style.overflow = "";
-    State.modalBanker = null; State.modalStep = null; State.modalSlot = null;
-  };
-  document.addEventListener("keydown", function(e){
-    if (e.key === "Escape") window.closeModal();
-  });
-
-  /* ---------------- register form ---------------- */
-  window.handleRegisterSubmit = function(ev){
-    ev.preventDefault();
-    var name = document.getElementById("regName").value.trim();
-    var checkedTags = Array.prototype.slice.call(document.querySelectorAll('input[name="regTag"]:checked')).map(function(el){ return el.value; });
-    var slots = [document.getElementById("regSlot1").value.trim(), document.getElementById("regSlot2").value.trim(), document.getElementById("regSlot3").value.trim()]
-      .filter(function(s){ return s; }).map(mkSlot);
-
-    if (!checkedTags.length){ alert("Please select at least one area of expertise."); return; }
-    if (!slots.length){ alert("Please add at least one open time slot."); return; }
-
-    var banker = {
-      id: uid("bk_user"),
-      name: name,
-      employer: document.getElementById("regEmployer").value.trim(),
-      role: document.getElementById("regRole").value.trim(),
-      location: document.getElementById("regLocation").value.trim(),
-      years: Number(document.getElementById("regYears").value) || 0,
-      currency: document.getElementById("regCurrency").value,
-      price: Number(document.getElementById("regPrice").value) || 0,
-      duration: Number(document.getElementById("regDuration").value),
-      tags: checkedTags,
-      languages: document.getElementById("regLanguages").value.split(",").map(function(s){ return s.trim(); }).filter(Boolean),
-      bio: document.getElementById("regBio").value.trim(),
-      linkedin: document.getElementById("regLinkedin").value.trim(),
-      rating: 5.0,
-      chats: 0,
-      response: "usually within a day",
-      slots: slots,
-      createdAt: Date.now()
-    };
-
-    State.bankers.unshift(banker);
-    persistBankers();
-
-    document.getElementById("registerFormWrap").hidden = true;
-    var successEl = document.getElementById("registerSuccess");
-    successEl.hidden = false;
-    successEl.innerHTML =
-      '<div class="card success-box">'
-        + '<div class="glyph">🎉</div>'
-        + '<h3>Your profile is live</h3>'
-        + '<p>Students can now find and book you in the marketplace.</p>'
-        + '<div style="max-width:340px; margin:0 auto 24px;">' + bankerCard(banker, {isNew:true}) + '</div>'
-        + '<div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">'
-          + '<button class="btn btn-primary" onclick="showView(\'marketplace\')">View in marketplace</button>'
-          + '<button class="btn btn-ghost" onclick="showView(\'dashboard\')">Go to my dashboard</button>'
-        + '</div>'
-      + '</div>';
-
-    document.getElementById("registerForm").reset();
-  };
-
-  /* ---------------- bookings view ---------------- */
-  function renderBookings(){
-    var el = document.getElementById("bookingsList");
-    if (!State.bookings.length){
-      el.innerHTML = '<div class="empty-state"><div class="glyph">☕</div><h3>No bookings yet</h3><p>Once you book a coffee chat, it will show up here.</p><button class="btn btn-primary" onclick="showView(\'marketplace\')">Browse bankers</button></div>';
-      return;
-    }
-    el.innerHTML = '<div class="booking-list">' + State.bookings.map(function(bk){
-      return (
-        '<div class="booking-row">'
-          + '<div class="booking-info">'
-            + '<div class="who">'+escapeHtml(bk.bankerName)+' <span style="color:var(--ink-faint); font-weight:400;">· '+escapeHtml(bk.bankerEmployer)+'</span></div>'
-            + '<div class="meta">'+escapeHtml(bk.slotLabel)+' · '+bk.duration+' min · '+(CURRENCY_SYMBOL[bk.currency]||"")+bk.price+'</div>'
-          + '</div>'
-          + '<span class="badge '+(bk.status==="cancelled"?"badge-cancelled":"badge-confirmed")+'">'+bk.status+'</span>'
-          + '<div class="booking-actions">'
-            + (bk.status==="confirmed" ? '<button class="btn btn-danger btn-sm" onclick="cancelBooking(\''+bk.id+'\')">Cancel</button>' : '')
-          + '</div>'
-        + '</div>'
-      );
-    }).join('') + '</div>';
-  }
-
-  window.cancelBooking = function(bookingId){
-    var bk = State.bookings.find(function(x){ return x.id===bookingId; });
-    if (!bk) return;
-    bk.status = "cancelled";
-    var banker = State.bankers.find(function(b){ return b.id===bk.bankerId; });
-    if (banker){
-      var slot = banker.slots.find(function(s){ return s.label===bk.slotLabel; });
-      if (slot) slot.taken = false;
-    }
-    persistBankers(); persistBookings();
-    renderBookings(); renderMarketplace(); renderFeatured();
-  };
-
-  /* ---------------- dashboard view ---------------- */
-  function populateDashboardSelect(){
-    var sel = document.getElementById("dashBankerSelect");
-    var prev = sel.value;
-    sel.innerHTML = State.bankers.map(function(b){ return '<option value="'+b.id+'">'+escapeHtml(b.name)+' — '+escapeHtml(b.employer)+'</option>'; }).join('');
-    if (prev && State.bankers.some(function(b){ return b.id===prev; })) sel.value = prev;
-  }
-
-  function renderDashboard(){
-    populateDashboardSelect();
-    var sel = document.getElementById("dashBankerSelect");
-    var b = State.bankers.find(function(x){ return x.id===sel.value; });
-    var body = document.getElementById("dashboardBody");
-    if (!b){ body.innerHTML = ""; return; }
-
-    var myBookings = State.bookings.filter(function(bk){ return bk.bankerId===b.id; });
-    var confirmed = myBookings.filter(function(bk){ return bk.status==="confirmed"; });
-    var earnings = confirmed.reduce(function(sum, bk){ return sum + bk.price; }, 0);
-
-    body.innerHTML =
-      '<div class="dash-stats">'
-        + '<div class="dash-stat"><b class="mono">'+(CURRENCY_SYMBOL[b.currency]||"")+earnings+'</b><span>Upcoming earnings</span></div>'
-        + '<div class="dash-stat"><b class="mono">'+confirmed.length+'</b><span>Confirmed sessions</span></div>'
-        + '<div class="dash-stat"><b class="mono">'+b.slots.filter(function(s){return !s.taken;}).length+'</b><span>Open slots left</span></div>'
-      + '</div>'
-      + '<div class="card" style="margin-bottom:28px; display:flex; gap:16px; align-items:flex-start;">'
-        + renderAvatar(b,"lg")
-        + '<div>'
-          + '<h3 style="font-size:19px;">'+escapeHtml(b.name)+'</h3>'
-          + '<p style="color:var(--ink-soft); font-size:14px; margin-top:3px;">'+escapeHtml(b.role)+' · '+escapeHtml(b.employer)+' '+verifiedBadge()+' · '+escapeHtml(b.location)+'</p>'
-          + '<div class="tag-row" style="margin-top:10px;">'+ b.tags.map(function(t){ return '<span class="tag tag-accent">'+escapeHtml(t)+'</span>'; }).join('') +'</div>'
-        + '</div>'
-      + '</div>'
-      + '<h3 style="font-size:16px; margin-bottom:14px;">Session requests</h3>'
-      + (myBookings.length
-          ? '<div class="booking-list">' + myBookings.map(function(bk){
-              return (
-                '<div class="booking-row">'
-                  + '<div class="booking-info">'
-                    + '<div class="who">'+escapeHtml(bk.studentName)+' <span style="color:var(--ink-faint); font-weight:400;">· '+escapeHtml(bk.university)+'</span></div>'
-                    + '<div class="meta">'+escapeHtml(bk.slotLabel)+(bk.message ? ' · "'+escapeHtml(bk.message)+'"' : '')+'</div>'
-                  + '</div>'
-                  + '<span class="badge '+(bk.status==="cancelled"?"badge-cancelled":"badge-confirmed")+'">'+bk.status+'</span>'
-                  + '<div class="booking-actions">'
-                    + (bk.status==="confirmed" ? '<button class="btn btn-danger btn-sm" onclick="cancelBooking(\''+bk.id+'\'); renderDashboard();">Cancel &amp; refund</button>' : '')
-                  + '</div>'
-                + '</div>'
-              );
-            }).join('') + '</div>'
-          : '<div class="empty-state"><div class="glyph">📭</div><h3>No requests yet</h3><p>Bookings from students will appear here once someone books this profile.</p></div>'
-        );
-  }
-  window.renderDashboard = renderDashboard;
-
-  /* ---------------- routing ---------------- */
-  window.showView = function(name){
-    document.querySelectorAll(".view").forEach(function(v){ v.hidden = v.dataset.view !== name; });
-    document.querySelectorAll(".navtab").forEach(function(t){ t.classList.toggle("active", t.dataset.view===name); });
-    window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
-    if (name==="marketplace") renderMarketplace();
-    if (name==="bookings") renderBookings();
-    if (name==="dashboard") renderDashboard();
-    if (name==="register"){
-      document.getElementById("registerFormWrap").hidden = false;
-      document.getElementById("registerSuccess").hidden = true;
-    }
-  };
-
-  /* ---------------- init ---------------- */
-  function init(){
-    loadState();
-    populateTagFilter();
-    populateTagCheckboxes();
-    renderHero();
-    renderFeatured();
-    renderMarketplace();
-    showView("home");
-
-    var nav = document.getElementById("siteNav");
-    window.addEventListener("scroll", function(){
-      nav.classList.toggle("scrolled", window.scrollY > 8);
-    }, { passive:true });
-  }
-
-  if (document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
-})();
-</script>
+<script src="js/vendor/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/core.js"></script>
+<script src="js/market.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/onboarding.js"></script>
+<script src="js/nav.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

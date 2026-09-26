@@ -1,0 +1,17 @@
+# Auth settings applied to the hosted project (subset only; SMTP etc. are managed in the dashboard).
+# Preview: supabase config diff --workdir supabase/remote-auth --project-ref taeztgpapuyptolbowum
+# Apply:   supabase config push --workdir supabase/remote-auth --project-ref taeztgpapuyptolbowum
+# Only the auth settings we want to change. Everything not declared here (SMTP, site URL, ...) stays as it is.
+[auth]
+minimum_password_length = 8
+
+[auth.email]
+otp_length = 6
+
+[auth.email.template.recovery]
+subject = "Reset your Cortado password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Verify your work email for Cortado"
+content_path = "./supabase/templates/magic_link.html"
