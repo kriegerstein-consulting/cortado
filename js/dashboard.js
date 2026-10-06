@@ -1,30 +1,7 @@
-/* Cortado — banker dashboard: status, requests, slot management. */
+/* Cortado — banker dashboard: donations raised, ratings, requests, slot management. */
 (function(CD){
   "use strict";
   var S = CD.State, esc = CD.esc, A = CD.actions;
-  var WV = { step:"idle", chk:null, error:"", busy:false };    /* work-email verification (current bankers) */
-
-  function workEmailCard(b){
-    var hidden = b.status !== "verified";
-    return '<div class="notice notice-warn" style="align-items:flex-start;">'
-      + '<div style="flex:1; min-width:240px;">'
-        + '<p><strong>Verify your work email now.</strong> '
-          + (hidden ? 'Your profile stays hidden from students until you confirm that you can receive email at ' : 'Confirm that you can receive email at ')
-          + '<strong>'+esc(b.workEmail || "your work email")+'</strong>. '
-          + 'We send a separate code to that address — your login email and password are not affected.</p>'
-        + (WV.step === "code"
-            ? '<form data-form="wvVerify" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;">'
-              + '<input class="input" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" pattern="[0-9]{6,10}" required placeholder="Code from your work email" style="max-width:240px;">'
-              + '<button class="btn btn-primary btn-sm" type="submit"'+(WV.busy ? ' disabled' : '')+'>Verify</button>'
-              + '<button type="button" class="link-btn" data-action="wvSend">Send a new code</button>'
-            + '</form>'
-            : '')
-        + (WV.error ? '<p class="field-error">'+esc(WV.error)+'</p>' : '')
-      + '</div>'
-      + (WV.step === "code" ? '' : '<button class="btn btn-primary btn-sm" data-action="wvSend"'+(WV.busy ? ' disabled' : '')+'>Send code</button>')
-    + '</div>';
-  }
-
   CD.renderDashboard = function(){
     var b = CD.myBanker(), body = document.getElementById("dashboardBody");
     if (!b){
@@ -36,35 +13,30 @@
                          .sort(function(x,y){ return y.createdAt - x.createdAt; });
     var confirmed = mine.filter(function(bk){ return bk.status==="confirmed"; });
     var pending = mine.filter(function(bk){ return bk.status==="requested"; });
-    var net = confirmed.reduce(function(sum, bk){ return sum + bk.price; }, 0) * (1 - CD.FEE);
+    /* confirmed chats that already took place count as raised; upcoming ones as pledged */
+    var now = Date.now();
+    function sum(list){ return list.reduce(function(t, bk){ return t + bk.price; }, 0); }
+    var raised = sum(confirmed.filter(function(bk){ return new Date(bk.slotStart).getTime() <= now; }));
+    var pledged = sum(confirmed.filter(function(bk){ return new Date(bk.slotStart).getTime() > now; }));
     var openCount = CD.openSlots(b).length;
+    var charity = CD.findCharity(b.charityId);
 
-    var notice = "";
-    var current = CD.typeOf(b) === "current";
-    if (b.status === "rejected"){
-      notice = '<div class="notice notice-warn"><p><strong>Verification not successful.</strong> Your profile stays hidden. Please contact us if you think this is a mistake.</p></div>';
-    } else if (current && !b.workEmailVerified){
-      notice = workEmailCard(b);
-    } else if (b.status === "pending"){
-      notice = '<div class="notice notice-warn"><p><strong>Verification pending.</strong> '
-        + (current
-            ? 'Your work email is confirmed. Our team is checking your employer and will make your profile visible shortly.'
-            : 'Your profile is hidden from students until our team has reviewed your LinkedIn profile. We will get in touch at your login address.')
-        + '</p></div>';
-    }
+    var notice = b.status === "rejected"
+      ? '<div class="notice notice-warn"><p><strong>Your profile is hidden.</strong> Our team has paused it, for example after a report or repeated poor ratings. Please contact us if you think this is a mistake.</p></div>'
+      : '';
 
-    var statusBadge = b.status==="verified"
-      ? '<span class="badge badge-confirmed">Verified</span>'
-      : (b.status==="rejected" ? '<span class="badge badge-declined">Not verified</span>' : '<span class="badge badge-pending">Pending</span>');
+    var statusBadge = b.status==="rejected"
+      ? '<span class="badge badge-declined">Hidden</span>'
+      : '<span class="badge badge-confirmed">Live</span>';
 
     var slotsSorted = b.slots.slice().sort(function(x,y){ return new Date(x.start) - new Date(y.start); });
-    var now = Date.now();
 
     body.innerHTML = notice
       + '<div class="dash-stats">'
         + '<div class="dash-stat"><b class="mono">'+pending.length+'</b><span>Pending requests</span></div>'
         + '<div class="dash-stat"><b class="mono">'+confirmed.length+'</b><span>Confirmed sessions</span></div>'
-        + '<div class="dash-stat"><b class="mono">'+CD.money(b.currency, net)+'</b><span>Upcoming earnings (after 12% fee)</span></div>'
+        + '<div class="dash-stat dash-stat-brand"><b class="mono">'+CD.money(b.currency, raised)+'</b><span>Raised for '+esc(charity ? charity.name : "charity")+(pledged ? ' · '+CD.money(b.currency, pledged)+' pledged' : '')+'</span></div>'
+        + '<div class="dash-stat"><b class="mono">'+(b.chats ? b.rating.toFixed(1) : '–')+'</b><span>'+(b.chats ? 'Average rating · '+b.chats+(b.chats===1 ? ' rating' : ' ratings') : 'No ratings yet')+'</span></div>'
         + '<div class="dash-stat"><b class="mono">'+openCount+'</b><span>Open slots left</span></div>'
       + '</div>'
       + '<div class="card" style="margin-bottom:28px; display:flex; gap:16px; align-items:flex-start;">'
@@ -72,10 +44,18 @@
         + '<div>'
           + '<h3 style="font-size:19px;">'+esc(CD.headline(b))+' '+statusBadge+'</h3>'
           + '<p style="color:var(--ink-soft); font-size:14px; margin-top:3px;">'+esc(b.employer)+' · '+esc(b.location)+(CD.typeOf(b)==="former" && b.period ? ' · '+esc(b.period) : '')+'</p>'
-          + '<p style="color:var(--ink-faint); font-size:13px; margin-top:3px;">'+CD.fmtPrice(b)+' / '+b.duration+' min · Profile '+esc(b.handle||"")+'</p>'
+          + '<p style="color:var(--ink-faint); font-size:13px; margin-top:3px;">'+CD.fmtPrice(b)+' donation / '+b.duration+' min · Profile '+esc(b.handle||"")+'</p>'
           + '<p style="color:var(--ink-faint); font-size:13px; margin-top:3px;">Private, not shown publicly: '+esc(b.name || (S.session && S.session.name) || "")+'</p>'
-          + (current ? '<p style="font-size:13px; margin-top:3px; color:'+(b.workEmailVerified ? 'var(--green)' : 'var(--amber)')+';">Work email: '+(b.workEmailVerified ? CD.icon("shield-check")+' verified' : 'not verified yet')+'</p>' : '')
           + '<div class="tag-row" style="margin-top:10px;">'+ b.tags.map(function(t){ return '<span class="tag tag-accent">'+esc(t)+'</span>'; }).join('') +'</div>'
+          + '<div style="margin-top:12px;">'+CD.ratingLine(b)+'</div>'
+          + '<form class="charity-change" data-form="charity">'
+            + '<label for="dCharity">Your chats support</label>'
+            + '<select id="dCharity" name="charity">'
+              + S.charities.map(function(c){ return '<option value="'+esc(c.id)+'"'+(c.id===b.charityId ? ' selected' : '')+'>'+esc(c.name)+'</option>'; }).join('')
+            + '</select>'
+            + '<button class="btn btn-outline btn-sm" type="submit">Save</button>'
+          + '</form>'
+          + '<p class="hint" style="font-size:12.5px; color:var(--ink-faint); margin-top:6px;">A change applies to new requests; existing ones keep their charity.</p>'
         + '</div>'
       + '</div>'
       + '<h3 style="font-size:16px; margin-bottom:14px;">Session requests</h3>'
@@ -86,14 +66,15 @@
               if (bk.status==="requested"){
                 actions = '<button class="btn btn-primary btn-sm" data-action="setBooking" data-id="'+esc(bk.id)+'" data-status="confirmed">Confirm</button>'
                         + '<button class="btn btn-danger btn-sm" data-action="setBooking" data-id="'+esc(bk.id)+'" data-status="declined">Decline</button>';
-              } else if (bk.status==="confirmed"){
+              } else if (bk.status==="confirmed" && new Date(bk.slotStart).getTime() > now){
                 actions = '<button class="btn btn-danger btn-sm" data-action="setBooking" data-id="'+esc(bk.id)+'" data-status="cancelled">Cancel</button>';
               }
               return (
                 '<div class="booking-row">'
                   + '<div class="booking-info">'
                     + '<div class="who">'+esc(bk.studentName || ("Student " + (bk.studentHandle || "")))+' <span style="color:var(--ink-faint); font-weight:400;">· '+esc(bk.university)+(bk.studentMarket ? ' · target '+esc(bk.studentMarket) : '')+'</span></div>'
-                    + '<div class="meta">'+esc(CD.fmtSlot(bk.slotStart))+(bk.message ? ' · "'+esc(bk.message)+'"' : '')+'</div>'
+                    + '<div class="meta">'+esc(CD.fmtSlot(bk.slotStart))+' · '+CD.money(bk.currency, bk.price)+' to '+esc(bk.charityName || "charity")+(bk.message ? ' · "'+esc(bk.message)+'"' : '')+'</div>'
+                    + (bk.reviewRating ? '<div class="my-review">Rated '+CD.stars(bk.reviewRating)+(bk.reviewComment ? ' <span>"'+esc(bk.reviewComment)+'"</span>' : '')+'</div>' : '')
                     + (who && who.email ? '<div class="contact">Contact: <b>'+esc(who.email)+'</b></div>' : '')
                   + '</div>'
                   + '<span class="badge badge-'+bk.status+'">'+CD.STATUS_LABEL[bk.status]+'</span>'
@@ -118,32 +99,19 @@
       + '</form>';
   };
 
-  A.wvSend = function(){
+  CD.forms.charity = function(f){
     var b = CD.myBanker();
-    if (!b || WV.busy) return;
-    WV.busy = true; WV.error = "";
-    CD.renderDashboard();
-    CD.store.startWorkCheck(b.workEmail).then(function(chk){
-      WV.chk = chk; WV.step = "code"; WV.busy = false;
-      CD.toast("Code sent to " + chk.email + ".");
-      CD.renderDashboard();
-    }, function(err){
-      WV.busy = false; WV.error = CD.errMsg(err);
-      CD.renderDashboard();
-    });
-  };
-
-  CD.forms.wvVerify = function(f){
-    if (!WV.chk || WV.busy) return;
-    WV.busy = true; WV.error = "";
-    CD.store.completeWorkCheck(WV.chk, f.elements["code"].value.trim()).then(function(res){
-      WV.step = "idle"; WV.chk = null; WV.busy = false;
-      CD.store.track("work_email_verified", { auto: !!(res && res.auto_verified) });
-      CD.toast(res && res.auto_verified ? "Verified — your profile is now live." : "Work email confirmed. We will review your employer.");
+    if (!b) return;
+    var id = f.elements["charity"].value, btn = f.querySelector('button[type="submit"]');
+    if (id === b.charityId) return;
+    if (btn) btn.disabled = true;
+    CD.store.setCharity(b.id, id).then(function(){
+      CD.store.track("charity_changed", { charity: id });
+      CD.toast("Saved — new requests now support " + ((CD.findCharity(id) || {}).name || "this charity") + ".");
       return CD.store.load();
-    }).then(function(){ CD.renderNav(); CD.refresh(); }, function(err){
-      WV.busy = false; WV.error = CD.errMsg(err);
-      CD.renderDashboard();
+    }).then(function(){ CD.refresh(); }, function(err){
+      if (btn) btn.disabled = false;
+      CD.toast(CD.errMsg(err));
     });
   };
 

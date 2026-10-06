@@ -33,7 +33,7 @@
 
   function isLast(){ var st = steps(); return st.indexOf(onb.step) === st.length - 1; }
   function actionsHtml(override, backLabel){
-    var label = override || (isLast() ? (onb.roles.banker ? "Create my profile" : "Get started") : "Continue");
+    var label = override || (isLast() ? (onb.roles.banker ? "Publish my profile" : "Get started") : "Continue");
     return (onb.error ? '<p class="field-error" style="margin:0 0 12px;">'+esc(onb.error)+'</p>' : '')
       + '<div class="onb-actions"><button type="button" class="btn btn-ghost" data-action="onbBack">'+(backLabel || "Back")+'</button><button type="submit" class="btn btn-primary">'+label+'</button></div>';
   }
@@ -56,8 +56,8 @@
         + '<h2>How will you use Cortado?</h2>'
         + '<p class="onb-sub">Pick one or both — you can add the other later.</p>'
         + '<div class="role-cards">'
-          + roleCard("student", "cap", "I'm a student", "Browse verified bankers and request a 1:1 chat about the job, the recruiting process and interview prep.")
-          + roleCard("banker", "briefcase", "I'm a banker", "Offer paid 30–60 minute chats on your own terms and keep 88% of every booking.")
+          + roleCard("student", "cap", "I'm a student", "Browse rated bankers and request a 1:1 chat about the job, the recruiting process and interview prep. Your fee goes to charity.")
+          + roleCard("banker", "briefcase", "I'm a banker", "Put the coffee-chat requests you get on LinkedIn into your calendar. Every chat raises a donation for a charity you pick.")
         + '</div>'
         + '<div class="onb-actions"><button type="button" class="btn btn-primary" data-action="onbNext"'+(none ? ' disabled' : '')+'>Continue</button></div>'
         + '<p style="text-align:center; margin-top:14px;"><button type="button" class="link-btn" data-action="go" data-view="marketplace">Just looking around for now</button></p>'
@@ -81,7 +81,7 @@
         + '<form class="card" data-form="onb">'
           + '<div class="field"><label for="fFullName">Full name</label><input class="input" id="fFullName" name="fullName" required autocomplete="name" value="'+v(d.name)+'" placeholder="e.g. Jordan Weber"></div>'
           + '<div class="field"><label for="fEmail">Email</label><input class="input" type="email" id="fEmail" name="email" required autocomplete="email"'+(signedIn ? ' readonly' : '')+' value="'+v(d.email)+'" placeholder="you@example.com">'
-            + '<p class="hint">'+(signedIn ? 'You are signed in with this address.' : 'We send a code to confirm this address. Use your university email if you have one. Bankers verify their employer separately with their work email.')+'</p></div>'
+            + '<p class="hint">'+(signedIn ? 'You are signed in with this address.' : 'We send a code to confirm this address. Bankers: please use a private address, not your work email.')+'</p></div>'
           + (signedIn ? '' : '<div class="field"><label for="fPw">Password</label><input class="input" type="password" id="fPw" name="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"><p class="hint">Use a password you do not use anywhere else.</p></div>')
           + actionsHtml()
         + '</form>';
@@ -138,8 +138,8 @@
       return '<h2>About you</h2><p class="onb-sub">This is shown on your public profile. Your name and contact details are not — they are shared only once you confirm a request.</p>'
         + '<form class="card" data-form="onb">'
           + '<fieldset><legend>Do you currently work at a bank or firm?</legend><div class="role-cards" style="margin-bottom:0;">'
-            + typeCard("current", "Yes, I work there now", "Current banker. Verified with a one-time code sent to your work email.", cur)
-            + typeCard("former", "No, I have past experience", "Former employee, analyst or intern — e.g. 3 years in New York, now studying. Verified via your LinkedIn profile.", !cur)
+            + typeCard("current", "Yes, I work there now", "Current banker, taking part privately in your free time.", cur)
+            + typeCard("former", "No, I have past experience", "Former employee, analyst or intern — e.g. 3 years in New York, now studying. Labelled as Former.", !cur)
           + '</div></fieldset>'
           + '<div class="field-row">'
             + '<div class="field"><label for="fEmployer">'+(cur ? 'Current employer' : 'Former employer')+'</label><input class="input" id="fEmployer" name="employer" required value="'+v(d.employer)+'" placeholder="'+(cur ? 'e.g. Goldman Sachs' : 'e.g. Deutsche Bank')+'"></div>'
@@ -149,28 +149,33 @@
             + '<div class="field"><label for="fLoc">'+(cur ? 'Location' : 'Where you worked')+'</label><input class="input" id="fLoc" name="location" required value="'+v(d.location)+'" placeholder="'+(cur ? 'e.g. London, UK' : 'e.g. New York, USA')+'"></div>'
             + '<div class="field"><label for="fYears">Years of experience</label><input class="input" type="number" min="0" max="50" id="fYears" name="years" required value="'+v(d.years)+'" placeholder="3"></div>'
           + '</div>'
-          + (cur
-              ? '<div class="field"><label for="fWorkMail">Work email</label><input class="input" type="email" id="fWorkMail" name="workEmail" required value="'+v(d.workEmail)+'" placeholder="you@yourbank.com"><p class="hint">Used only to verify your employer with a one-time code. Never shown publicly.</p></div>'
-              : '<div class="field"><label for="fPeriod">Period</label><input class="input" id="fPeriod" name="period" required value="'+v(d.period)+'" placeholder="e.g. 2022–2025"><p class="hint">Shown on your profile so students know how recent your experience is.</p></div>')
-          + '<div class="field"><label for="fLinkedin">LinkedIn URL'+(cur ? ' (optional)' : '')+'</label><input class="input" id="fLinkedin" name="linkedin"'+(cur ? '' : ' required')+' value="'+v(d.linkedin)+'" placeholder="linkedin.com/in/…">'+'<p class="hint">'+(cur ? 'Used only for verification.' : 'We check this manually before your profile goes live.')+' Never shown publicly.</p>'+'</div>'
+          + (cur ? '' : '<div class="field"><label for="fPeriod">Period</label><input class="input" id="fPeriod" name="period" required value="'+v(d.period)+'" placeholder="e.g. 2022–2025"><p class="hint">Shown on your profile so students know how recent your experience is.</p></div>')
+          + '<p class="disclosure-note">'+CD.icon("info")+'<span>No work email, no employer check. Students trust profiles through the ratings other students leave after each chat, so describe your experience accurately.</span></p>'
+          + '<div style="height:18px;"></div>'
           + actionsHtml()
         + '</form>';
     },
 
     banker2: function(){
       var d = onb.data.banker, min = CD.toLocalInput(new Date());
-      return '<h2>Your offer</h2><p class="onb-sub">You set the price, length and exact time slots — nothing is booked without your say-so.</p>'
+      return '<h2>Your offer</h2><p class="onb-sub">You set the donation, length and exact time slots — nothing is booked without your say-so. You receive no money: the full donation goes to the charity you choose.</p>'
         + '<form class="card" data-form="onb">'
-          + '<div class="field-row-3">'
+          + '<fieldset><legend>Who should your chats support?</legend><div class="charity-pick">'
+            + S.charities.map(function(c){
+                return '<label class="charity-opt"><input type="radio" name="charity" value="'+esc(c.id)+'" required'+(d.charity===c.id ? ' checked' : '')+'>'
+                  + '<span><b>'+esc(c.name)+'</b><small>'+esc(c.cause)+'</small></span></label>';
+              }).join('')
+          + '</div></fieldset>'
+          + '<div class="field-row">'
             + '<div class="field"><label for="fDur">Session length</label><select id="fDur" name="duration">'
               + ["30","45","60"].map(function(m){ return '<option value="'+m+'"'+(d.duration===m?' selected':'')+'>'+m+' minutes</option>'; }).join('')
             + '</select></div>'
-            + '<div class="field"><label for="fPrice">Price per session</label><div style="display:flex; gap:6px;">'
+            + '<div class="field"><label for="fPrice">Donation per chat</label><div style="display:flex; gap:6px;">'
               + '<select name="currency" style="width:84px; flex:none;">'
                 + [["USD","$"],["EUR","€"],["GBP","£"],["CHF","CHF"]].map(function(c){ return '<option value="'+c[0]+'"'+(d.currency===c[0]?' selected':'')+'>'+c[1]+'</option>'; }).join('')
               + '</select>'
-              + '<input class="input" type="number" min="5" max="500" id="fPrice" name="price" required value="'+v(d.price)+'" placeholder="60">'
-            + '</div><p class="hint">You keep 88%.</p></div>'
+              + '<input class="input" type="number" min="5" max="500" id="fPrice" name="price" required value="'+v(d.price)+'" placeholder="30">'
+            + '</div><p class="hint">Paid by the student, forwarded 100% to the charity.</p></div>'
           + '</div>'
           + '<fieldset><legend>Areas of expertise (pick a few)</legend><div class="checkbox-grid">'+tagBoxes(d.tags)+'</div></fieldset>'
           + '<div class="field"><label for="fLang">Languages spoken</label><input class="input" id="fLang" name="languages" required value="'+v(d.languages)+'" placeholder="e.g. English, French"></div>'
@@ -187,21 +192,25 @@
     },
 
     banker3: function(){
-      var d = onb.data.banker, cur = d.type !== "former";
-      return '<h2>Compliance &amp; verification</h2><p class="onb-sub">The last step before your profile can go live.</p>'
+      var d = onb.data.banker, cur = d.type !== "former", c = CD.findCharity(d.charity);
+      function box(name, text){
+        return '<label class="consent-box"><input type="checkbox" name="'+name+'" required'+(d.declared ? ' checked' : '')+'><span>'+text+'</span></label>';
+      }
+      return '<h2>Self-declaration</h2><p class="onb-sub">There is no employer check. Your profile goes live as soon as you confirm the points below, and students rate every chat afterwards.</p>'
         + '<form class="card" data-form="onb">'
-          + '<div class="side-note" style="margin-bottom:20px;"><h4>What happens next</h4><ul>'
-            + (cur ? '<li>We verify your employer with a one-time code sent to your work email.</li>'
-                   : '<li>We review your LinkedIn profile manually to verify your experience.</li>')
-            + '<li>Once verified, your profile goes live and students can request your open slots.</li>'
-            + (cur ? '' : '<li>Your profile is labelled <strong>Former</strong> so students know it is first-hand experience from past roles.</li>')
+          + '<div class="side-note" style="margin-bottom:20px;"><h4>How it works</h4><ul>'
+            + '<li>Your profile is live right away. Students request your open slots, you confirm or decline.</li>'
+            + '<li>Every student donates <strong>'+esc(CD.money(d.currency, Number(d.price) || 0))+'</strong> to <strong>'+esc(c ? c.name : "your charity")+'</strong>. Cortado forwards 100% and earns money from ads only.</li>'
+            + '<li>After each chat the student rates it. Ratings are public and build your reputation.</li>'
+            + (cur ? '' : '<li>Your profile is labelled <strong>Former</strong> so students know it is experience from past roles.</li>')
             + '<li>Your name and contact details stay private until you confirm a request.</li>'
-            + '<li>Sessions are career and recruiting conversations only.</li>'
           + '</ul></div>'
-          + '<div class="field"><label class="consent-box"><input type="checkbox" name="compliance" required'+(d.compliance?' checked':'')+'><span>'
-            + (cur ? 'I confirm this profile complies with my employer\'s outside-activity / compliance policy, and that I will not share confidential, non-public, or client-specific information during sessions.'
-                   : 'I confirm that I will not share confidential, non-public, or client-specific information from any current or former employer during sessions, and that this profile does not breach any NDA or other obligation I am bound by.')
-            + '</span></label></div>'
+          + '<div class="declare-list">'
+            + box("d1", 'I take part <strong>privately, in my free time</strong> and not on behalf of '+(cur ? 'my employer' : 'any current or former employer')+'. I receive no payment or other benefit; the donation goes to the charity in full.')
+            + box("d2", 'I talk about careers and recruiting only and will not share confidential, non-public or client-specific information.')
+            + box("d3", 'I make no promises about jobs, referrals or application outcomes. If a student I met here applies '+(cur ? 'to my employer' : 'somewhere I am involved')+', I will not take part in that hiring decision, or will disclose the contact.')
+            + box("d4", 'The information in my profile is accurate'+(cur ? ', and I will check whether my employer\'s policy asks me to report this volunteer activity' : '')+'.')
+          + '</div>'
           + actionsHtml()
         + '</form>';
     }
@@ -213,8 +222,6 @@
     d.role = e["role"].value.trim();
     d.location = e["location"].value.trim();
     d.years = e["years"].value;
-    d.linkedin = e["linkedin"].value.trim();
-    if (e["workEmail"]) d.workEmail = e["workEmail"].value.trim();
     if (e["period"]) d.period = e["period"].value.trim();
   }
 
@@ -279,6 +286,9 @@
     },
     banker2: function(f){
       var d = onb.data.banker;
+      var picked = f.querySelector('input[name="charity"]:checked');
+      d.charity = picked ? picked.value : "";
+      if (!d.charity){ CD.toast("Please choose a charity."); return false; }
       d.duration = f.elements["duration"].value;
       d.currency = f.elements["currency"].value;
       d.price = f.elements["price"].value;
@@ -297,8 +307,9 @@
       return true;
     },
     banker3: function(f){
-      onb.data.banker.compliance = f.elements["compliance"].checked;
-      return onb.data.banker.compliance;
+      var all = ["d1","d2","d3","d4"].every(function(n){ return f.elements[n].checked; });
+      onb.data.banker.declared = all;
+      return all;
     }
   };
 
@@ -340,7 +351,7 @@
       data: {
         name: s ? s.name : "", email: s ? s.email : (CD.store.user ? CD.store.user.email : ""),
         student: { university:"", market:"", tags:[] },
-        banker: { type:"current", period:"", employer:"", role:"", location:"", years:"", workEmail:"", linkedin:"", currency:"USD", price:"", duration:"30", tags:[], languages:"", bio:"", slots:["","",""], compliance:false }
+        banker: { type:"current", period:"", employer:"", role:"", location:"", years:"", charity:"", currency:"USD", price:"", duration:"30", tags:[], languages:"", bio:"", slots:["","",""], declared:false }
       }
     };
   }
@@ -412,13 +423,11 @@
           employer: bd.employer, role: bd.role, location: bd.location,
           period: former ? bd.period : null,
           years: Number(bd.years) || 0, currency: bd.currency, price: Number(bd.price) || 0, duration: Number(bd.duration),
-          tags: bd.tags,
+          tags: bd.tags, charity_id: bd.charity,
           languages: bd.languages.split(",").map(function(x){ return x.trim(); }).filter(Boolean),
           bio: bd.bio
         }, {
-          full_name: name,
-          work_email: former ? null : bd.workEmail,
-          linkedin: bd.linkedin || null
+          full_name: name
         }, bd.slots.filter(Boolean).map(function(x){ return new Date(x).toISOString(); }));
       }
       await CD.store.load();
@@ -438,7 +447,7 @@
     }
     CD.store.track("signup_completed", { student: !!onb.roles.student, banker: !!onb.roles.banker });
     var first = ((S.session && S.session.name) || name || "").split(" ")[0];
-    enter(resume || { view: toBanker ? "dashboard" : "marketplace" }, toBanker ? "Profile created — verification pending." : "You're all set, " + first + ".");
+    enter(resume || { view: toBanker ? "dashboard" : "marketplace" }, toBanker ? "Your profile is live." : "You're all set, " + first + ".");
   }
 
   CD.forms.onb = function(f){

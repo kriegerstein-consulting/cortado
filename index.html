@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cortado</title>
-<meta name="description" content="Cortado connects students with working and former bankers for paid one-on-one career conversations.">
+<meta name="description" content="Cortado turns coffee-chat requests into scheduled one-on-one career conversations between students and bankers. Every chat is a donation to charity.">
+<meta name="theme-color" content="#4A0A26">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -21,16 +23,30 @@
     <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
     <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
     <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.52 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.12 2.12 0 0 0 1.6 1.16l5.16.76a.53.53 0 0 1 .3.9l-3.74 3.64a2.12 2.12 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.12 2.12 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.12 2.12 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .3-.9l5.16-.76a2.12 2.12 0 0 0 1.6-1.16z"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+    <!-- brand mark (colors from CSS tokens, so it adapts to dark mode) -->
+    <symbol id="logo-mark" viewBox="0 0 48 56">
+      <g class="steam" style="fill:none; stroke:var(--logo-ink); stroke-width:2.2; stroke-linecap:round;">
+        <path d="M17 10c-2-2.2 2-3.8 0-7"/><path d="M24 10c-2-2.2 2-3.8 0-7"/><path d="M31 10c-2-2.2 2-3.8 0-7"/>
+      </g>
+      <rect x="13" y="13" width="22" height="5" rx="2" style="fill:var(--logo-ink)"/>
+      <rect x="10" y="17" width="28" height="5" rx="2.5" style="fill:var(--logo-ink)"/>
+      <path d="M13 22h22l-2.5 30a2 2 0 0 1-2 2H17.5a2 2 0 0 1-2-2z" style="fill:var(--logo-cup); stroke:var(--logo-ink); stroke-width:3; stroke-linejoin:round;"/>
+      <path d="M13.75 31h20.5l-1.08 13H14.83z" style="fill:var(--logo-sleeve); stroke:var(--logo-ink); stroke-width:3; stroke-linejoin:round;"/>
+      <g style="fill:var(--logo-dot)"><circle cx="19.5" cy="37.5" r="1.7"/><circle cx="24" cy="37.5" r="1.7"/><circle cx="28.5" cy="37.5" r="1.7"/></g>
+    </symbol>
   </defs>
 </svg>
 
-<div class="demo-bar"><b>Prototype</b> Booking requests only — no real payments are processed.</div>
+<div class="demo-bar"><b>Prototype</b> Booking requests only — no donations are collected yet. Listed charities are examples, not partners.</div>
 
 <div class="nav" id="siteNav">
   <div class="nav-inner">
     <button class="logo" data-action="logo" aria-label="Cortado home">
-      <svg viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="6" fill="currentColor"/><path d="M18.6 9.4A6.5 6.5 0 1 0 18.6 18.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
-      <span class="logo-text">Cortado</span>
+      <svg class="logo-mark" aria-hidden="true"><use href="#logo-mark"/></svg>
+      <span class="logo-text">cortado</span>
     </button>
     <div class="navtabs" id="navtabs"></div>
     <div class="nav-right" id="navRight"></div>
@@ -42,16 +58,19 @@
   <div class="wrap hero">
     <div class="hero-grid">
       <div>
-        <span class="eyebrow">30 minutes. One banker. Zero cold emails.</span>
-        <h1>Get the industry insight your LinkedIn messages never answer.</h1>
-        <p class="hero-sub">Cortado connects students with working and former bankers for paid, one-on-one career conversations — about the job, the recruiting process and how to break in, straight from people who have done it.</p>
+        <span class="eyebrow">One coffee chat. One banker. One good cause.</span>
+        <h1>The coffee chat your LinkedIn message never got — and it does some good.</h1>
+        <p class="hero-sub">Students book a one-on-one career conversation with a working or former banker. Instead of a fee, they make a donation to the banker's chosen charity. Bankers get their coffee-chat requests into one calendar — and keep nothing for themselves.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" data-action="go" data-view="marketplace">Browse bankers</button>
-          <button class="btn btn-ghost" data-action="becomeBanker">Offer your experience</button>
+          <button class="btn btn-ghost" data-action="becomeBanker">Offer your time</button>
         </div>
-        <p class="hero-note">No subscription. You pay per conversation.</p>
+        <p class="hero-note">100% of every donation goes to charity. Cortado is funded by ads.</p>
       </div>
-      <div class="hero-card" id="heroCard"></div>
+      <div class="hero-visual">
+        <div class="hero-blob" aria-hidden="true"><svg class="hero-mark"><use href="#logo-mark"/></svg></div>
+        <div class="hero-card" id="heroCard"></div>
+      </div>
     </div>
   </div>
 
@@ -61,9 +80,9 @@
       <h2>Three steps between you and a real answer</h2>
     </div>
     <div class="steps">
-      <div class="step"><div class="step-num">01</div><h3>Find the right person</h3><p>Filter by bank, role and expertise. Every profile shows employer, experience, a fixed price and open time slots — and whether the banker works there now or did before.</p></div>
-      <div class="step"><div class="step-num">02</div><h3>Request a time slot</h3><p>Pick an open slot and send your request with the questions you have. The banker confirms, so nothing is booked without their say-so.</p></div>
-      <div class="step"><div class="step-num">03</div><h3>Have the conversation</h3><p>30 to 60 minutes, one-on-one, no recruiter listening in. Ask what you would never put in a first cold email.</p></div>
+      <div class="step"><div class="step-num">01</div><h3>Find the right person</h3><p>Filter by role and expertise and see what other students rated each banker. Every profile shows experience, open time slots, the donation and the charity it supports.</p></div>
+      <div class="step"><div class="step-num">02</div><h3>Request a time slot</h3><p>Pick an open slot and send your questions. The banker confirms, so nothing is booked without their say-so. Your donation goes to their charity in full.</p></div>
+      <div class="step"><div class="step-num">03</div><h3>Talk, then rate</h3><p>30 to 60 minutes, one-on-one. Afterwards you rate the chat — that rating is what the next student relies on.</p></div>
     </div>
   </div>
 
@@ -81,27 +100,29 @@
     <div class="split">
       <div class="panel">
         <h3>For students</h3>
-        <p>Get a trusted, first-hand answer instead of guessing what recruiting really looks like.</p>
+        <p>Get a first-hand answer instead of guessing what recruiting really looks like — and know your money does some good.</p>
         <ul>
-          <li><svg class="ic"><use href="#i-check"/></svg>Verified profiles with employer, role and years of experience</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Fixed price and open slots visible before you request</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Current and former bankers clearly labelled</li>
+          <li><svg class="ic"><use href="#i-star"/></svg>Ratings from students who actually had the chat</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Donation and open slots visible before you request</li>
+          <li><svg class="ic"><use href="#i-heart"/></svg>100% of your donation goes to the banker's charity</li>
         </ul>
         <button class="btn btn-primary" data-action="go" data-view="marketplace">Browse bankers</button>
       </div>
-      <div class="panel">
+      <div class="panel panel-brand">
         <h3>For bankers</h3>
-        <p>Turn the coffee chats you already get asked for into scheduled, compensated time.</p>
+        <p>Too many “quick coffee?” messages on LinkedIn? Put them into one calendar and turn each one into a donation.</p>
         <ul>
-          <li><svg class="ic"><use href="#i-check"/></svg>You set the price, session length and your own time slots</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>You keep 88% of every booking</li>
+          <li><svg class="ic"><use href="#i-calendar"/></svg>You open the slots, you confirm every request</li>
+          <li><svg class="ic"><use href="#i-heart"/></svg>You pick the charity; you receive no money yourself</li>
+          <li><svg class="ic"><use href="#i-check"/></svg>Privately, in your free time — no work email, no employer link</li>
           <li><svg class="ic"><use href="#i-check"/></svg>Your name stays private until you confirm a request</li>
-          <li><svg class="ic"><use href="#i-check"/></svg>Verified through your work email or, for former bankers, your LinkedIn profile</li>
         </ul>
         <button class="btn btn-outline" data-action="becomeBanker">Create a profile</button>
       </div>
     </div>
   </div>
+
+  <div class="wrap" id="homeAd"></div>
 
   <div class="band">
     <div class="wrap section-tight">
@@ -111,38 +132,43 @@
       </div>
       <div class="faq">
         <details open>
-          <summary>Is this real mentoring or just a paid favor?</summary>
-          <p>It is compensated time — and that is the point. Bankers can be generous with their calendar without feeling exploited, and you skip the guessing game of whether it is too much to ask for free.</p>
+          <summary>Where does my money go?</summary>
+          <p>To the charity the banker picked from our list — in full. Cortado collects the donation and forwards 100% of it. The banker receives nothing. In this prototype no money is collected yet.</p>
+        </details>
+        <details>
+          <summary>How does Cortado make money?</summary>
+          <p>Only through ads on the site, for example from graduate programmes, prep courses or finance tools. Ads are placed by topic, not by tracking you, and never presented as an endorsement by a banker.</p>
+        </details>
+        <details>
+          <summary>How do I know a banker is who they say they are?</summary>
+          <p>Cortado does not check employers — that would tie a private activity to the banker's workplace. Instead, every banker signs a self-declaration, and after every chat the student rates it. Ratings are public and anonymous, and only students with a confirmed chat can leave one. Profiles with repeated poor ratings or reports are hidden by our team.</p>
+        </details>
+        <details>
+          <summary>Is this a conflict of interest for bankers?</summary>
+          <p>Bankers take part privately and receive no payment or other benefit. They make no promises about jobs or referrals and do not take part in a hiring decision about a student they met here (or disclose the contact). Chats cover careers and recruiting only — never confidential deal, client or trade information.</p>
         </details>
         <details>
           <summary>What if a banker cancels?</summary>
-          <p>Your slot is released and you can request another open slot with the same banker or someone else.</p>
-        </details>
-        <details>
-          <summary>Do bankers need approval from their firm?</summary>
-          <p>Every current banker confirms compliance with their employer's outside-activity policy before a profile goes live. Sessions are limited to career and recruiting conversations — never confidential deal, client or trade information.</p>
+          <p>Your slot is released, no donation is collected, and you can request another open slot with the same banker or someone else.</p>
         </details>
         <details>
           <summary>Why don't profiles show names?</summary>
-          <p>Banker profiles show role, employer, location and experience — what the person offers. A banker's name and contact details are shared only once they confirm your request. That protects bankers' privacy and keeps the focus on the experience you are booking. Bankers see the name of the student who requests a chat.</p>
+          <p>Banker profiles show role, experience and what the person can help with. A banker's name and contact details are shared only once they confirm your request. Bankers see the name of the student who requests a chat.</p>
         </details>
         <details>
           <summary>What does "former" mean on a profile?</summary>
           <p>Former bankers share first-hand experience from past roles, for example three years as an analyst in New York. They are labelled clearly, so you always know whether you are talking to someone who works there today.</p>
-        </details>
-        <details>
-          <summary>Is this only for investment banking?</summary>
-          <p>Cortado starts with banking, where the information gap in recruiting is especially large. The same model applies to consulting, law and tech.</p>
         </details>
       </div>
     </div>
   </div>
 
   <div class="wrap section-tight">
-    <div class="card" style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap;">
-      <div>
-        <h3 style="font-size:22px; margin-bottom:6px;">Ready to skip the cold email?</h3>
-        <p style="color:var(--ink-soft); font-size:14.5px;">Create your profile in a few minutes — as a student, as a banker, or both.</p>
+    <div class="cta-card">
+      <svg class="cta-mark" aria-hidden="true"><use href="#logo-mark"/></svg>
+      <div style="flex:1; min-width:240px;">
+        <h3>Ready for your first coffee chat?</h3>
+        <p>Create your profile in a few minutes — as a student, as a banker, or both.</p>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
         <button class="btn btn-primary" data-action="start">Get started</button>
@@ -165,7 +191,7 @@
       <h2>Find someone who has done what you want to do</h2>
     </div>
     <div class="filter-bar">
-      <input type="search" class="input" id="searchInput" placeholder="Search by name, bank or city">
+      <input type="search" class="input" id="searchInput" placeholder="Search by bank, role, city or charity">
       <select id="filterTag" aria-label="Expertise">
         <option value="">All expertise</option>
       </select>
@@ -176,8 +202,9 @@
       </select>
       <select id="filterSort" aria-label="Sort">
         <option value="rating">Sort: Best match</option>
-        <option value="price-asc">Sort: Price (low to high)</option>
-        <option value="price-desc">Sort: Price (high to low)</option>
+        <option value="top">Sort: Top rated</option>
+        <option value="price-asc">Sort: Donation (low to high)</option>
+        <option value="price-desc">Sort: Donation (high to low)</option>
         <option value="new">Sort: Newest</option>
       </select>
     </div>
@@ -192,7 +219,7 @@
     <div class="section-head">
       <span class="eyebrow">My bookings</span>
       <h2>Your conversation requests</h2>
-      <p>Requests are confirmed by the banker. Names and contact details appear here once a request is confirmed.</p>
+      <p>Requests are confirmed by the banker. Names and contact details appear here once a request is confirmed. After the chat, rate it here.</p>
     </div>
     <div id="bookingsList"></div>
   </div>
@@ -203,7 +230,7 @@
   <div class="wrap" style="padding-top:48px;">
     <div class="section-head">
       <span class="eyebrow">Banker dashboard</span>
-      <h2>Manage your profile and requests</h2>
+      <h2>Your chats, your charity, your ratings</h2>
     </div>
     <div id="dashboardBody"></div>
   </div>
@@ -213,10 +240,10 @@
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <div class="logo" style="cursor:default;">
-        <svg viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="6" fill="currentColor"/><path d="M18.6 9.4A6.5 6.5 0 1 0 18.6 18.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
-        <span>Cortado</span>
+        <svg class="logo-mark" aria-hidden="true"><use href="#logo-mark"/></svg>
+        <span class="logo-text">cortado</span>
       </div>
-      <p>Paid, one-on-one career conversations between students and bankers.</p>
+      <p>One-on-one career conversations between students and bankers. Every chat is a donation to charity.</p>
     </div>
     <div class="footer-col">
       <h5>For students</h5>
@@ -230,11 +257,12 @@
     </div>
     <div class="footer-col">
       <h5>Trust &amp; compliance</h5>
-      <p>Current bankers confirm their firm's outside-activity policy before listing. Conversations cover careers and recruiting only — never confidential deal or client information.</p>
+      <p>Bankers take part privately and receive no money. Trust comes from student ratings after every chat. Careers and recruiting only — never confidential deal or client information.</p>
+      <button data-action="advertise" style="margin-top:10px;">Advertise on Cortado</button>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>Cortado — prototype. No real payments are processed.</span>
+    <span>cortado — prototype. No donations are collected yet; listed charities are examples, not partners. Funded by ads.</span>
   </div>
 </footer>
 

@@ -9,11 +9,11 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
   CD.TAGS = ["M&A","ECM","DCM","Leveraged Finance","Private Equity","Sales & Trading","Corporate Banking","Restructuring","Venture Capital","Recruiting / Breaking In","MBA Admissions","CV / Resume Review"];
   CD.MARKETS = ["USA","UK","DACH","Other"];
   CD.CURRENCY_SYMBOL = { USD:"$", EUR:"€", GBP:"£", CHF:"CHF " };
-  CD.FEE = 0.12;
+  /* Cortado earns from ads only: the full donation goes to the banker's chosen charity */
 
   /* session: null (visitor / signed in without a profile) or
      { id, name, email, roles:{student,banker}, activeRole, student:{university,market,tags}|null, bankerId|null, emailVerified, handle } */
-  CD.State = { bankers: [], bookings: [], session: null };
+  CD.State = { bankers: [], bookings: [], charities: [], reviews: [], session: null };
   var S = CD.State;
 
   /* ---------------- helpers ---------------- */
@@ -56,7 +56,14 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
   /* inline SVG icon from the sprite in index.html */
   CD.icon = function(name){ return '<svg class="ic" aria-hidden="true"><use href="#i-'+name+'"/></svg>'; };
 
-  /* "current" = works at a bank now (employer-verified); "former" = past experience, labelled as such */
+  CD.findCharity = function(id){
+    return S.charities.filter(function(c){ return c.id===id; })[0] || null;
+  };
+  CD.reviewsFor = function(bankerId){
+    return S.reviews.filter(function(r){ return r.bankerId===bankerId; });
+  };
+
+  /* "current" = works at a bank now; "former" = past experience, labelled as such */
   CD.typeOf = function(b){ return b.type === "former" ? "former" : "current"; };
 
   /* public headline of a profile — never the person's name */
@@ -103,21 +110,13 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
     return db;
   }
 
-  /* separate in-memory client: proves control of the work mailbox without changing the user's own login */
-  function tempClient(){
-    var c = window.CD_CONFIG;
-    return window.supabase.createClient(c.supabaseUrl, c.supabaseKey, {
-      auth: { persistSession:false, autoRefreshToken:false, detectSessionInUrl:false, storageKey:"cortado-workcheck-" + Date.now() }
-    });
-  }
-
   function mapBanker(r){
     return {
       id:r.id, userId:r.user_id, handle:r.handle, type:r.type, status:r.status,
       employer:r.employer, role:r.role, location:r.location, period:r.period || "", years:r.years,
       currency:r.currency, price:Number(r.price), duration:r.duration,
       tags:r.tags || [], languages:r.languages || [], bio:r.bio, response:r.response,
-      rating: r.rating == null ? null : Number(r.rating), chats:r.chats || 0,
+      rating: r.rating == null ? null : Number(r.rating), chats:r.chats || 0, charityId:r.charity_id,
       createdAt:new Date(r.created_at).getTime(),
       slots:(r.slots || []).map(function(s){ return { id:s.id, start:s.start_at, taken:s.taken }; })
     };
@@ -130,7 +129,8 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
       createdAt:new Date(r.created_at).getTime(),
       bankerRole:r.banker_headline, bankerEmployer:r.banker_employer, bankerHandle:r.banker_handle,
       studentHandle:r.student_handle, studentName:r.student_name || "", university:r.student_university || "", studentMarket:r.student_market || "",
-      viewerIsStudent:!!r.viewer_is_student, counterpartName:r.counterpart_name, counterpartEmail:r.counterpart_email
+      viewerIsStudent:!!r.viewer_is_student, counterpartName:r.counterpart_name, counterpartEmail:r.counterpart_email,
+      charityName:r.charity_name || "", reviewRating:r.review_rating == null ? null : Number(r.review_rating), reviewComment:r.review_comment || ""
     };
   }
 
@@ -145,6 +145,15 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
     if (br.error) throw br.error;
     S.bankers = br.data.map(mapBanker);
 
+    var ch = await c.from("charities").select("*").order("sort");
+    if (ch.error) throw ch.error;
+    S.charities = ch.data;
+
+    /* public and anonymous: who wrote a review is not readable */
+    var rv = await c.from("reviews").select("banker_id,rating,comment,created_at").order("created_at", { ascending:false }).limit(500);
+    if (rv.error) throw rv.error;
+    S.reviews = rv.data.map(function(r){ return { bankerId:r.banker_id, rating:r.rating, comment:r.comment || "", createdAt:new Date(r.created_at).getTime() }; });
+
     S.session = null; S.bookings = []; CD.store.hasProfileRow = false;
     if (!uid) return;
 
@@ -156,11 +165,8 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
 
     var own = S.bankers.filter(function(b){ return b.userId === uid; })[0] || null;
     if (own){
-      var pv = await c.from("banker_private").select("full_name,work_email,linkedin,work_email_verified_at").eq("banker_id", own.id).maybeSingle();
-      if (pv.data){
-        own.name = pv.data.full_name; own.workEmail = pv.data.work_email || ""; own.linkedin = pv.data.linkedin || "";
-        own.workEmailVerified = !!pv.data.work_email_verified_at;
-      }
+      var pv = await c.from("banker_private").select("full_name").eq("banker_id", own.id).maybeSingle();
+      if (pv.data) own.name = pv.data.full_name;
     }
 
     var roles = { student: !!prof.is_student, banker: !!(prof.is_banker && own) };
@@ -269,6 +275,10 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
       var r = await client().from("slots").delete().eq("id", id);
       if (r.error) throw r.error;
     },
+    setCharity: async function(bankerId, charityId){
+      var r = await client().from("banker_profiles").update({ charity_id: charityId }).eq("id", bankerId);
+      if (r.error) throw r.error;
+    },
 
     /* ---- bookings (atomic, permission-checked in the database) ---- */
     requestBooking: async function(slotId, message){
@@ -280,22 +290,10 @@ window.CD = { actions:{}, forms:{}, changes:{}, ui:{ view:"home", menuOpen:false
       if (r.error) throw r.error;
     },
 
-    /* ---- work-email verification for current bankers ---- */
-    startWorkCheck: async function(workEmail){
-      var r = await client().rpc("start_work_email_check", { p_work_email: workEmail });
+    /* ---- reviews: the student of a confirmed chat rates it once, after it has taken place ---- */
+    submitReview: async function(bookingId, rating, comment){
+      var r = await client().rpc("submit_review", { p_booking_id: bookingId, p_rating: rating, p_comment: comment || "" });
       if (r.error) throw r.error;
-      var temp = tempClient();
-      var o = await temp.auth.signInWithOtp({ email: workEmail.trim().toLowerCase(), options: { shouldCreateUser: true } });
-      if (o.error) throw o.error;
-      return { nonce: r.data, email: workEmail.trim().toLowerCase(), temp: temp };
-    },
-    completeWorkCheck: async function(chk, code){
-      var v = await chk.temp.auth.verifyOtp({ email: chk.email, token: code, type: "email" });
-      if (v.error) throw v.error;
-      var r = await chk.temp.rpc("complete_work_email_check", { p_nonce: chk.nonce });
-      if (r.error) throw r.error;
-      chk.temp.auth.signOut().catch(function(){});
-      return r.data;
     },
 
     /* ---- product analytics for validation (fire and forget) ---- */
